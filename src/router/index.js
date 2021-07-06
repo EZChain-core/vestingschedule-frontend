@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Hồ sơ khách hàng',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Hồ sơ khách hàng', icon: 'dashboard' }
+      meta: { title: 'Hồ sơ khách hàng', icon: 'el-icon-postcard' }
     }]
   },
 
@@ -66,13 +66,13 @@ export const constantRoutes = [
         path: 'table',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: { title: 'Table', icon: 'el-icon-setting' }
       },
       {
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        meta: { title: 'Tree', icon: 'el-icon-s-data' }
       }
     ]
   },
@@ -85,7 +85,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'Form',
         component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        meta: { title: 'Form', icon: 'el-icon-s-data' }
       }
     ]
   },
