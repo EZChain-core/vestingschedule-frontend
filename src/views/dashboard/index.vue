@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-
+    <div class="text-red-500">bacodekiller</div>
   </div>
 </template>
 
@@ -19,6 +19,7 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard {
+  // height: calc(100vh-);
   &-container {
     margin: 30px;
   }
