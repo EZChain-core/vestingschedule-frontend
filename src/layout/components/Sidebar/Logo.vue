@@ -1,13 +1,13 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
+  <div class="sidebar-logo-containers" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">{{ title }} </h1>
+      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link flex items-center flex-col justify-center" to="/">
+        <img v-if="logo" src="@/assets/Logo-VNDG.png" class="sidebar-logo">
+        <h1 v-else class="sidebar-title">Anti Fraud System</h1>
       </router-link>
-      <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">{{ title }} </h1>
+      <router-link v-else key="expand" class="sidebar-logo-link flex items-center flex-col justify-center" to="/">
+        <img v-if="logo" src="@/assets/Logo-VNDG.png" class="sidebar-logo">
+        <h1 class="sidebar-title mt-4">Anti Fraud System </h1>
       </router-link>
     </transition>
   </div>
@@ -41,35 +41,33 @@ export default {
   opacity: 0;
 }
 
-.sidebar-logo-container {
+.sidebar-logo-containers {
   position: relative;
   width: 100%;
-  height: 50px;
+  padding-top: 20px;
+  // height: 50px;
   line-height: 50px;
-  background: #2b2f3a;
+  background: #ffffff;
   text-align: center;
   overflow: hidden;
 
   & .sidebar-logo-link {
+    display: flex !important;
     height: 100%;
     width: 100%;
 
     & .sidebar-logo {
-      width: 32px;
-      height: 32px;
+      width: 164.8;
+      height: 100%;
       vertical-align: middle;
       margin-right: 12px;
     }
 
     & .sidebar-title {
-      display: inline-block;
-      margin: 0;
-      color: #fff;
-      font-weight: 600;
-      line-height: 50px;
-      font-size: 14px;
-      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
-      vertical-align: middle;
+      font-size: 16px;
+      line-height: 19px;
+      color: #888B96;
+      text-align: center;
     }
   }
 

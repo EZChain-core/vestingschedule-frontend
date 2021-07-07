@@ -38,11 +38,26 @@ module.exports = {
       ...lineHeight
     },
     extend: {
-      color: {
-        neutralDarkContent: {
-          100: '#FFFFFF',
-          200: 'rgba(255, 255, 255, 0.75)',
-          300: 'rgba(255, 255, 255, 0.5)'
+      colors: {
+        VNDG: {
+          buttonBlue: '#0066CC',
+          stateBlue: '#3385D6',
+          yellow: '#3385D6',
+          red: '#F7685B',
+          green: '#2ED47A',
+          dRed: '#E42E2E',
+          gray600: '#718096',
+          gray700: '#4A5568',
+          tableGray: '#707683',
+          mainDblue: '#213A52',
+          newGray: '#A3A6B1',
+          disableGray: '#E5E5E5',
+          darkBlue: '#334D6E',
+          gray: '#90A0B7',
+          iconGray: '#C2CFE0',
+          grayCyan: '#EDF2F7',
+          lightGrayCyan: '#F7FAFC',
+          gCyan: '#4FD1C5'
         }
       }
     }

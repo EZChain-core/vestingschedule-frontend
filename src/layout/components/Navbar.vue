@@ -1,13 +1,22 @@
 <template>
-  <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+  <div class="navbar flex items-center justify-between">
+    <div class="flex items-center">
+      <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb class="breadcrumb-container" />
-
+      <!-- <breadcrumb class="breadcrumb-container" /> -->
+      <div class="w-96 ml-3">
+        <el-input
+          v-model="search"
+          placeholder="Tìm kiếm (Tên KH, SĐT, CMND/CCCD, ...)"
+        >
+          <i slot="prefix" class="el-input__icon el-icon-search" />
+        </el-input>
+      </div>
+    </div>
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="avatar+'?imageView2/1/w/80/h/80'" alt="avatar" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -33,29 +42,32 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
+// import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
-export default {
-  components: {
-    Breadcrumb,
-    Hamburger
-  },
-  computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar'
-    ])
-  },
-  methods: {
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
-    },
-    async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
+export default { components: {
+  // Breadcrumb,
+  Hamburger
+}, data() {
+  return {
+    search: ''
   }
+},
+computed: {
+  ...mapGetters([
+    'sidebar',
+    'avatar'
+  ])
+},
+methods: {
+  toggleSideBar() {
+    this.$store.dispatch('app/toggleSideBar')
+  },
+  async logout() {
+    await this.$store.dispatch('user/logout')
+    this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+  }
+}
 }
 </script>
 
