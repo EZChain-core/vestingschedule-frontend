@@ -1,16 +1,15 @@
 <template>
-  <div class="navbar flex items-center justify-between">
-    <div class="flex items-center">
-      <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
-      <!-- <breadcrumb class="breadcrumb-container" /> -->
-      <div class="w-96 ml-3">
-        <el-input
-          v-model="search"
-          placeholder="Tìm kiếm (Tên KH, SĐT, CMND/CCCD, ...)"
-        >
-          <i slot="prefix" class="el-input__icon el-icon-search" />
-        </el-input>
+  <div class="navbar-detail flex items-center justify-between">
+    <router-link to="/dashboard">
+      <div class="flex items-center">
+        <img src="@/assets/images/arrow-back.png" alt="arrow-back">
+        <img src="@/assets/Logo-VNDG.png" alt="logo-vndg" class="sidebar-logo h-10 object-cover">
+      </div>
+    </router-link>
+    <div class="relative z-10 flex items-center">
+      <hr class="w-full absolute top-1/2 h-0.5 bg-VNDG-grayCyan">
+      <div v-for="item in listStatus" :key="item.id" :class="`${item.id === 1 ? 'active' : 'not-active'}`" class="navbar-detail__btn relative px-9 py-2">
+        {{ item.name }}
       </div>
     </div>
     <div class="right-menu">
@@ -37,14 +36,32 @@
 <script>
 import { mapGetters } from 'vuex'
 // import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
+// import Hamburger from '@/components/Hamburger'
 
 export default { components: {
   // Breadcrumb,
-  Hamburger
+  // Hamburger
 }, data() {
   return {
-    search: ''
+    active: '',
+    listStatus: [
+      {
+        id: 1,
+        name: 'HS mới'
+      },
+      {
+        id: 2,
+        name: 'HS thẩm định trả lại'
+      },
+      {
+        id: 3,
+        name: 'HS cần điều tra'
+      },
+      {
+        id: 4,
+        name: 'HS thu hồi nợ chuyển sang'
+      }
+    ]
   }
 },
 computed: {
@@ -66,7 +83,7 @@ methods: {
 </script>
 
 <style lang="scss" scoped>
-.navbar {
+.navbar-detail {
   height: 50px;
   overflow: hidden;
   position: relative;
@@ -140,6 +157,20 @@ methods: {
         }
       }
     }
+  }
+  &__btn:first-of-type {
+    @apply ml-0;
+  }
+  &__btn {
+    @apply text-sm leading-4 ml-10;
+    border-radius: 34px;
+  }
+  .active {
+    @apply bg-VNDG-stateBlue text-white font-black;
+  }
+  .not-active {
+    @apply bg-white text-VNDG-mainDblue;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
   }
 }
 </style>

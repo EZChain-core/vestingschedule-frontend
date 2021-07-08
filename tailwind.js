@@ -62,7 +62,13 @@ module.exports = {
       }
     }
   },
-  variants: {},
+  variants: {
+    margin: ['responsive', 'first', 'last', 'hover', 'focus'],
+    overflow: ['responsive', 'hover'],
+    padding: ['responsive', 'first', 'last', 'hover', 'focus'],
+    borderRadius: ['responsive', 'hover', 'focus'],
+    extend: {}
+  },
   plugins: [require('tailwindcss-truncate-multiline')(['responsive', 'hover'])],
   purge: {
     // Learn more on https://tailwindcss.com/docs/controlling-file-size/#removing-unused-css
