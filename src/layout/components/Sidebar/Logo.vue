@@ -2,11 +2,11 @@
   <div class="sidebar-logo-containers" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link flex items-center flex-col justify-center" to="/">
-        <img v-if="logo" src="@/assets/Logo-VNDG.png" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">Anti Fraud System</h1>
+        <img src="@/assets/Logo-VNDG.png" class="sidebar-logo">
+        <h1 class="sidebar-title">Anti Fraud System</h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link flex items-center flex-col justify-center" to="/">
-        <img v-if="logo" src="@/assets/Logo-VNDG.png" class="sidebar-logo">
+        <img src="@/assets/Logo-VNDG.png" class="sidebar-logo">
         <h1 class="sidebar-title mt-4">Anti Fraud System </h1>
       </router-link>
     </transition>

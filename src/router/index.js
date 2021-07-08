@@ -36,6 +36,11 @@ export const constantRoutes = [
     component: () => import('@/views/login/index'),
     hidden: true
   },
+  {
+    path: '/ho-so/:id',
+    component: () => import('@/views/ho-so/_id.vue'),
+    hidden: true
+  },
 
   {
     path: '/404',
