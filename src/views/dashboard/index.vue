@@ -34,7 +34,7 @@
           <span class="text-white text-xs leading-3.5 px-2 py-1 rounded bg-VNDG-gCyan">3</span>
         </div>
         <div class="overflow-y-auto h-full" style="max-height: calc(100vh - 165px);">
-          <investigation-file v-for="i in 10" :key="i" class="mt-4 first:mt-0" />
+          <file-switch v-for="i in 10" :key="i" class="mt-4 first:mt-0" />
         </div>
       </div>
     </div>
@@ -46,12 +46,14 @@ import { mapGetters } from 'vuex'
 import NewFile from '@/components/home/NewFile/index.vue'
 import FileReturned from '@/components/home/FileReturned/index.vue'
 import InvestigationFile from '@/components/home/InvestigationFile/index.vue'
+import FileSwitch from '@/components/home/FileSwitch/index.vue'
 export default {
   name: 'Dashboard',
   components: {
     NewFile,
     FileReturned,
-    InvestigationFile
+    InvestigationFile,
+    FileSwitch
   },
   computed: {
     ...mapGetters([
