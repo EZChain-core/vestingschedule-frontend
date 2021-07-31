@@ -1,1 +1,1 @@
-# Anti Fraud System CMS
+# vue_template
