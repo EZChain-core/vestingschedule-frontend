@@ -22,7 +22,7 @@ build:
   script:
     - echo 'script for building on DEV branch'
     - pwd
-    - cp .env.development .env.production
+#    - cp .env.development .env.production
     - ls
     - docker build -t vnd-data-demo-frontend:v1.0 .
     - echo 'stop container...'
