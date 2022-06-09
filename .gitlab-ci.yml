@@ -29,7 +29,7 @@ build:
     - docker stop vnd-data-demo-container || true && docker rm vnd-data-demo-container || true
     - git log --oneline -10
     - echo 'start deploying...'
-    - docker run -d -p 10000:80 --name default.conf vnd-data-demo-frontend:v1.0
+    - docker run -d -p 10000:80 --name vnd-data-demo-container vnd-data-demo-frontend:v1.0
     - echo 'BUILDINGGGG SUCCESSFULY'
   only:
     - develop
