@@ -67,11 +67,12 @@ div:focus {
 ::-webkit-scrollbar
 {
 	width: 6px;
+  height: 9px;
 	background-color: #F5F5F5;
 }
 
 ::-webkit-scrollbar-thumb
 {
 	border-radius: 100px;
-	background-color: #0D72B9;
+	background-color: #F5F5F5;
 }

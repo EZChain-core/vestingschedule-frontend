@@ -32,6 +32,11 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
+    path: '/',
+    component: () => import('@/views/magic-lens/index'),
+    hidden: true
+  },
+  {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -48,17 +53,17 @@ export const constantRoutes = [
     hidden: true
   },
 
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Hồ sơ khách hàng',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Hồ sơ khách hàng', icon: 'el-icon-postcard' }
-    }]
-  },
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   children: [{
+  //     path: 'dashboard',
+  //     name: 'Hồ sơ khách hàng',
+  //     component: () => import('@/views/dashboard/index'),
+  //     meta: { title: 'Hồ sơ khách hàng', icon: 'el-icon-postcard' }
+  //   }]
+  // },
 
   {
     path: '/example',

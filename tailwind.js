@@ -38,8 +38,23 @@ module.exports = {
       ...lineHeight
     },
     extend: {
+      gridTemplateColumns: {
+        // Simple 16 column grid
+        '16': '348px 1fr',
+        '150': '190px 1fr'
+      },
       colors: {
+        magic: {
+          borderMagic: '#E6EBF4',
+          listMagicLen: '#292C53',
+          level1: '#FFC207',
+          level2: '#5F69E7',
+          level3: '#C1C5D7',
+          level4: '#868A9E'
+        },
         VNDG: {
+          borderMagic: '#E6EBF4',
+          listMagicLen: '#292C53',
           buttonBlue: '#0066CC',
           stateBlue: '#3385D6',
           yellow: '#3385D6',
