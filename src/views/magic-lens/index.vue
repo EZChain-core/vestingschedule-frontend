@@ -24,7 +24,7 @@
           </div>
         </div>
       </div>
-      <div 
+      <div
         v-show="dataDetail" class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
         <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Chi tiết người vào</h2>
         <div class="grid grid-cols-16 gap-x-8">
@@ -218,11 +218,12 @@ export default {
             document.getElementById(value.fbid).src = value.imgPath
             document.getElementById(value.fbid + '-2').src = value.imgPath
           }, 200);
-          this.getFbInfo(value.fbid)
           const found = this.dataList.find(e => e.fbid ==  value.fbid)
           if (found != undefined) {
             const i = this.dataList.indexOf(found)
             this.dataList.splice(i, 1)
+          } else {
+            this.getFbInfo(value.fbid)
           }
         }
          this.dataList.push(value)
@@ -242,7 +243,7 @@ export default {
       if (id && id != '') {
         axios.get('https://demo.vndcredit.vn/data/?fb_id=' + `${id}` + '&phone=').then(res => {
           this.dataFbList.set(id, res.data)
-        }) 
+        })
       }
     },
     getData(data) {
