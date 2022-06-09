@@ -5,12 +5,12 @@
         <div class="grid grid-cols-2">
           <div class="flex justify-between items-center">
             <img class="w-36 h-11" src="@/assets/Logo-VNDG.png" alt="">
-            <router-link class="px-6 py-3 border-b-4 border-solid border-magic-level2" :to="{path: '/demo'}">
+            <router-link class="px-6 py-3" :to="{path: '/demo'}">
               <span class="text-center text-sm text-magic-listMagicLen">Danh sách người vào</span>
             </router-link>
           </div>
           <div class="flex justify-start items-center">
-            <router-link class="px-6 py-3" :to="{path: '/demo/search'}">
+            <router-link class="px-6 py-3 border-b-4 border-solid border-magic-level2" :to="{path: '/demo/search'}">
               <span class="text-center text-sm text-magic-level4">Tìm kiếm người vào</span>
             </router-link>
           </div>
@@ -18,22 +18,6 @@
       </div>
     </div>
     <div class="pb-24">
-      <div class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
-        <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Danh sách người vào</h2>
-        <div class="no_scroll flex items-center gap-6 overflow-x-auto pb-6">
-          <div
-            v-for="(item, index) in dataList"
-            :key="index"
-            class="flex justify-center flex-col items-center cursor-pointer mr-5"
-            @click="showProfile(item.fbid)"
-          >
-            <img class="w-30 h-30 rounded-lg" :src="item.imgPath" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">{{
-              item.userStatus === 'vip' ? 'VIP' : item.userStatus === 'new' ? 'NEW' : item.userStatus === 'normal' ? 'NORMAL' : ''
-            }}</p>
-          </div>
-        </div>
-      </div>
       <div class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
         <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Chi tiết người vào</h2>
         <div class="grid grid-cols-16 gap-x-8">
