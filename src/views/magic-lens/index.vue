@@ -10,70 +10,17 @@
     <div class="pb-24">
       <div class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
         <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Danh sách người vào</h2>
-        <div class="no_scroll flex justify-between items-center gap-6 overflow-x-auto pb-6">
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level2 text-xs w-24">Người mới</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default4.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level3 text-xs w-24">Người thường</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default3.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level3 text-xs w-24">Người thường</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
-          </div>
-          <div class="flex justify-center flex-col items-center cursor-pointer">
-            <img class="w-30 h-30 rounded-lg" src="@/assets/default2.svg" alt="">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">Người cao cấp</p>
+        <div class="no_scroll flex items-center gap-6 overflow-x-auto pb-6">
+          <div
+            v-for="(item, index) in dataList"
+            :key="index"
+            class="flex justify-center flex-col items-center cursor-pointer mr-5"
+            @click="showProfile(item.fbid)"
+          >
+            <img class="w-30 h-30 rounded-lg" :src="item.imgPath" alt="">
+            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">{{
+              item.userStatus === 'vip' ? 'VIP' : item.userStatus === 'new' ? 'NEW' : item.userStatus === 'normal' ? 'NORMAL' : ''
+            }}</p>
           </div>
         </div>
       </div>
@@ -239,20 +186,25 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      showDetail: false
+      showDetail: false,
+      dataList: []
     }
   },
-  created() {
-    this.getListData()
+  mounted() {
+    setInterval(() => {
+      this.getListData()
+    }, 2000)
   },
   methods: {
-    getListData() {
-      axios({
-        method: 'get',
-        url: 'https://demo.vndcredit.vn/server/api/queue'
-      }).then(function(response) {
-        console.log('response', response)
-      })
+    async getListData() {
+      const res = await axios.get('https://demo.vndcredit.vn/server/api/queue')
+      console.log('res', res)
+      this.dataList = res.data.Data.data
+    },
+    async showProfile(id) {
+      id = '100005227800848'
+      const res = await axios.get('https://demo.vndcredit.vn/data/?fb_id=' + `${id}` + '&phone=')
+      console.log(res)
     }
   }
 }
