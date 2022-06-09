@@ -32,20 +32,20 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/',
+    path: '/demo',
     component: () => import('@/views/magic-lens/index'),
     hidden: true
   },
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
-  {
-    path: '/ho-so/:id',
-    component: () => import('@/views/ho-so/_id.vue'),
-    hidden: true
-  },
+  // {
+  //   path: '/login',
+  //   component: () => import('@/views/login/index'),
+  //   hidden: true
+  // },
+  // {
+  //   path: '/ho-so/:id',
+  //   component: () => import('@/views/ho-so/_id.vue'),
+  //   hidden: true
+  // },
 
   {
     path: '/404',
@@ -55,13 +55,11 @@ export const constantRoutes = [
 
   // {
   //   path: '/',
-  //   component: Layout,
-  //   redirect: '/dashboard',
+  //   redirect: '/demo',
   //   children: [{
-  //     path: 'dashboard',
+  //     path: 'demo',
   //     name: 'Hồ sơ khách hàng',
-  //     component: () => import('@/views/dashboard/index'),
-  //     meta: { title: 'Hồ sơ khách hàng', icon: 'el-icon-postcard' }
+  //     component: () => import('@/views/magic-lens/index')
   //   }]
   // },
 

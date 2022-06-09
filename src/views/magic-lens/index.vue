@@ -88,8 +88,14 @@
             </div>
           </div>
           <div class="shadow grid grid-cols-2 pt-7 pl-10 pr-6 gap-6 pb-16 relative">
-            <button @click="showDetail = !showDetail" type="success" class="absolute -bottom-5 left-1/2 bg-magic-listMagicLen text-white p-2 rounded-lg">
-              {{ !showDetail ? 'Chi tiết' : 'Thu gọn'}} <i :class="!showDetail ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" />
+            <button
+              type="success"
+              class="absolute -bottom-5 left-1/2 bg-magic-listMagicLen text-white p-2 rounded-lg"
+              @click="showDetail = !showDetail"
+            >
+              {{ !showDetail ? 'Chi tiết' : 'Thu gọn' }} <i
+                :class="!showDetail ? 'el-icon-arrow-down' : 'el-icon-arrow-up'"
+              />
             </button>
             <div class="flex flex-col">
               <div class="grid grid-cols-2 items-center mb-5">
@@ -172,9 +178,18 @@
                   <span class="text-sm font-normal text-magic-level4">Thông tin người thân</span>
                 </p>
                 <ul class="list-disc">
-                  <li class="text-sm text-magic-listMagicLen">Bố ruột: Nguyễn Thành Nam (sdt 0171973917,<span class="underline">Facebook</span> )</li>
-                  <li class="text-sm text-magic-listMagicLen">Mẹ ruột: Nguyễn Thành Nam (sdt 0171973917, <span class="underline">Facebook</span>)</li>
-                  <li class="text-sm text-magic-listMagicLen">Em ruột: Nguyễn Thành Nam (sdt 0171973917, <span class="underline">Facebook</span>)</li>
+                  <li class="text-sm text-magic-listMagicLen">Bố ruột: Nguyễn Thành Nam (sdt 0171973917,<span
+                    class="underline"
+                  >Facebook</span> )
+                  </li>
+                  <li class="text-sm text-magic-listMagicLen">Mẹ ruột: Nguyễn Thành Nam (sdt 0171973917, <span
+                    class="underline"
+                  >Facebook</span>)
+                  </li>
+                  <li class="text-sm text-magic-listMagicLen">Em ruột: Nguyễn Thành Nam (sdt 0171973917, <span
+                    class="underline"
+                  >Facebook</span>)
+                  </li>
                 </ul>
                 <!-- <p class="text-sm text-magic-listMagicLen">Ổn định</p> -->
               </div>
@@ -200,8 +215,14 @@
                   <span class="text-sm font-normal text-magic-level4">Thông tin đồng nghiệp:</span>
                 </p>
                 <ul class="list-disc">
-                  <li class="text-sm text-magic-listMagicLen">Sếp: Nguyễn Thành Nam (sdt 0171973917, <span class="underline">Facebook</span> )</li>
-                  <li class="text-sm text-magic-listMagicLen">Cấp dưới: Nguyễn Thành Nam (sdt 0171973917, <span class="underline">Facebook</span>)</li>
+                  <li class="text-sm text-magic-listMagicLen">Sếp: Nguyễn Thành Nam (sdt 0171973917, <span
+                    class="underline"
+                  >Facebook</span> )
+                  </li>
+                  <li class="text-sm text-magic-listMagicLen">Cấp dưới: Nguyễn Thành Nam (sdt 0171973917, <span
+                    class="underline"
+                  >Facebook</span>)
+                  </li>
                 </ul>
               </div>
             </div>
@@ -213,10 +234,25 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
       showDetail: false
+    }
+  },
+  created() {
+    this.getListData()
+  },
+  methods: {
+    getListData() {
+      axios({
+        method: 'get',
+        url: 'https://demo.vndcredit.vn/server/api/queue'
+      }).then(function(response) {
+        console.log('response', response)
+      })
     }
   }
 }
