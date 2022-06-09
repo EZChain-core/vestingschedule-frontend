@@ -1,0 +1,54 @@
+image: docker:latest
+
+stages:
+  - build
+  - deploy
+
+variables:
+#  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+services:
+  - name: docker:dind
+    entrypoint: ["env", "-u", "DOCKER_HOST"]
+    command: ["dockerd-entrypoint.sh"]
+
+build:
+  tags:
+    - vnd-ai-runner
+  stage: build
+  allow_failure: false
+  script:
+    - echo 'script for building on DEV branch'
+    - pwd
+#    - cp .env.development .env.production
+    - ls
+    - docker build -t vnd-data-demo-frontend:v1.0 .
+    - echo 'stop container...'
+    - docker stop vnd-data-demo-container || true && docker rm vnd-data-demo-container || true
+    - git log --oneline -10
+    - echo 'start deploying...'
+    - docker run -d -p 10000:80 --name vnd-data-demo-container vnd-data-demo-frontend:v1.0
+    - echo 'BUILDINGGGG SUCCESSFULY'
+  only:
+    - develop
+    - /^dev-.*$/
+
+deploy_dev:
+  tags:
+    - vnd-ai-runner
+  stage: deploy
+  environment:
+    name: development
+  variables:
+    DEPLOY_BRANCH: develop
+    APP_IMAGE_TAG: dev
+    WEBHOOKD_URL: http://system-webhook-service:8080/deploy
+    VERSION: v1.0
+  script:
+    - echo 'script for deploying on DEV branch'
+    - echo 'DEPLOYED SUCCESSFULLY'
+  only:
+    - develop
+    - /^dev-.*$/
