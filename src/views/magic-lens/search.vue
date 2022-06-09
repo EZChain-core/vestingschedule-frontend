@@ -6,12 +6,12 @@
           <div class="flex justify-between items-center">
             <img class="w-36 h-11" src="@/assets/Logo-VNDG.png" alt="">
             <router-link class="px-6 py-3" :to="{path: '/demo'}">
-              <span class="text-center text-sm text-magic-listMagicLen">Danh sách người vào</span>
+              <span class="text-center text-sm  text-magic-level4">Danh sách người vào</span>
             </router-link>
           </div>
           <div class="flex justify-start items-center">
             <router-link class="px-6 py-3 border-b-4 border-solid border-magic-level2" :to="{path: '/demo/search'}">
-              <span class="text-center text-sm text-magic-level4">Tìm kiếm người vào</span>
+              <span class="text-center text-sm text-magic-listMagicLen">Tìm kiếm người vào</span>
             </router-link>
           </div>
         </div>
@@ -19,25 +19,21 @@
     </div>
     <div class="pb-24">
       <div class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
-        <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Chi tiết người vào</h2>
-        <div class="grid grid-cols-16 gap-x-8">
+        <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Tìm kiếm người vào</h2>
+        <div class="grid grid-cols-245 gap-x-8">
           <div class="rounded shadow-md bg-white p-6">
             <div class="flex justify-center items-center flex-col">
-              <img class="w-30 h-30 rounded-lg" src="@/assets/default.svg" alt="">
-              <p class="text-xl font-bold text-center mb-5 mt-4 text-VNDG-listMagicLen">Nguyễn Thị Tú Uyên</p>
-              <div class="w-24 text-xs text-white bg-magic-level1 p-2 rounded">Người cao cấp</div>
+              <h2 class="text-sm font-bold text-left w-full text-VNDG-listMagicLen mb-1">Facebook ID</h2>
+              <el-input v-model="facebookID" placeholder="Facebook ID" />
+              <el-button class="mt-4 bg-magic-level5 text-yellow-50 w-full" @click="search()">Tìm kiếm</el-button>
+            </div>
+            <div class="flex justify-center items-center flex-col mt-8">
+              <h2 class="text-sm font-bold text-left w-full text-VNDG-listMagicLen mb-1">Số điện thoại</h2>
+              <el-input v-model="phoneNumber" placeholder="Số điện thoại" />
+              <el-button class="mt-4 bg-magic-level5 text-yellow-50 w-full" @click="search()">Tìm kiếm</el-button>
             </div>
           </div>
-          <div class="shadow grid grid-cols-2 pt-7 pl-10 pr-6 gap-6 pb-16 relative">
-            <button
-              type="success"
-              class="absolute -bottom-5 left-1/2 bg-magic-listMagicLen text-white p-2 rounded-lg"
-              @click="showDetail = !showDetail"
-            >
-              {{ !showDetail ? 'Chi tiết' : 'Thu gọn' }} <i
-                :class="!showDetail ? 'el-icon-arrow-down' : 'el-icon-arrow-up'"
-              />
-            </button>
+          <div v-if="dataList && !isLoading" class="shadow grid grid-cols-2 pt-7 pl-10 pr-6 gap-6 pb-16">
             <div class="flex flex-col">
               <div class="grid grid-cols-2 items-center mb-5">
                 <p class="flex">
@@ -105,7 +101,7 @@
                 <p class="text-sm text-magic-listMagicLen">Người cao cấp</p>
               </div>
             </div>
-            <div v-show="showDetail" class="flex flex-col">
+            <div class="flex flex-col">
               <div class="grid grid-cols-150 items-start mb-5">
                 <p class="flex">
                   <img class="mr-2" src="@/assets/location.svg" alt="">
@@ -142,7 +138,7 @@
                 <p class="text-sm text-magic-listMagicLen">Ổn định</p>
               </div>
             </div>
-            <div v-show="showDetail" class="flex flex-col">
+            <div class="flex flex-col">
               <div class="grid grid-cols-150 items-start mb-5">
                 <p class="flex">
                   <img class="mr-2" src="@/assets/location.svg" alt="">
@@ -168,6 +164,15 @@
               </div>
             </div>
           </div>
+          <div v-else class="shadow pr-6 gap-6 pb-16 flex justify-center items-center relative">
+            <div v-if="isLoading" class="flex items-center justify-center bg-slate-50 h-full svg-loader relative z-50">
+              <svg class="svg-container" height="50" width="50" viewBox="0 0 100 100">
+                <circle class="loader-svg bg" cx="50" cy="50" r="45" />
+                <circle class="loader-svg animate" cx="50" cy="50" r="45" />
+              </svg>
+            </div>
+            <h2 v-if="!isLoading" class="shadow text-center relative z-40 bg-white p-2">Không có dữ liệu để hiển thị</h2>
+          </div>
         </div>
       </div>
 
@@ -176,33 +181,73 @@
 </template>
 <script>
 import axios from 'axios'
-
 export default {
   data() {
     return {
       showDetail: false,
-      dataList: [],
-      activeName: 'first'
+      dataList: null,
+      phoneNumber: '',
+      facebookID: '',
+      isLoading: false,
+      address: ''
+
     }
   },
-  mounted() {
-    // setInterval(() => {
-    //   this.getListData()
-    // }, 10000)
+  created() {
   },
   methods: {
-    async getListData() {
-      const res = await axios.get('https://demo.vndcredit.vn/server/api/queue')
-      console.log('res', res)
-      this.dataList = res.data.Data.data
-    },
-    async showProfile(id) {
-      id = '100005227800848'
-      const res = await axios.get('https://demo.vndcredit.vn/data/?fb_id=' + `${id}` + '&phone=')
-      console.log(res)
+    async search() {
+      this.isLoading = true
+      //   id = '100005227800848'
+      const res = await axios.get('https://demo.vndcredit.vn/data/?fb_id=' + `${this.facebookID}` + '&phone=' + `${this.phoneNumber}`)
+      if (res.data) {
+        this.isLoading = false
+        this.dataList = res.data
+        this.address = res.data.address.reverse().toString()
+        console.log(this.address)
+        console.log(res.data)
+      }
     }
   }
 }
 </script>
 <style>
+.svg-loader{
+    display:flex;
+    position: relative;
+    align-content: space-around;
+    justify-content: center;
+  }
+  .loader-svg{
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    fill: none;
+    stroke-width: 5px;
+    stroke-linecap: round;
+    stroke: rgb(64, 0, 148);
+  }
+  .loader-svg.bg{
+    stroke-width: 8px;
+    stroke: rgb(207, 205, 245);
+  }
+
+  .animate{
+    stroke-dasharray: 242.6;
+    animation: fill-animation 1s cubic-bezier(1,1,1,1) 0s infinite;
+  }
+
+  @keyframes fill-animation{
+    0%{
+      stroke-dasharray: 40 242.6;
+      stroke-dashoffset: 0;
+    }
+    50%{
+      stroke-dasharray: 141.3;
+      stroke-dashoffset: 141.3;
+    }
+    100%{
+      stroke-dasharray: 40 242.6;
+      stroke-dashoffset: 282.6;
+    }
+  }
 </style>
