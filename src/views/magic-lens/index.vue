@@ -212,9 +212,10 @@ export default {
   methods: {
     async getListData() {
       const res = await axios.get('https://demo.vndcredit.vn/server/api/queue')
-      this.dataList = res.data.Data.data
+      this.dataList = this.dataList.concat(res.data.Data.data)
     },
     showProfile(id, index) {
+      this.dataFb = ''
       this.dataDetail = this.dataList[index]
       if (id && id != '') {
         this.isLoading = true
