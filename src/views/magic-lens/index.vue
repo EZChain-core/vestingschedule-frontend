@@ -17,7 +17,7 @@
             class="flex justify-center flex-col items-center cursor-pointer mr-5"
             @click="showProfile(item.fbid, index)"
           >
-            <img class="w-30 h-30 rounded-lg" :src="item.imgPath" alt="">
+            <img :id="item.fbid" class="w-30 h-30 rounded-lg" :src="item.imgPath">
             <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">{{
               item.userStatus.toUpperCase()
             }}</p>
@@ -31,7 +31,7 @@
           <div class="rounded shadow-md bg-white p-6">
             <div class="flex justify-center items-center flex-col">
               <img v-if="getData(dataDetail.imgPath) == ''" class="w-30 h-30 rounded-lg" src="@/assets/default.svg" alt="">
-              <img v-else class="w-30 h-30 rounded-lg" :src="getData(dataDetail.imgPath)" alt="">
+              <img :id="dataDetail.fbid + '-2'" v-else class="w-30 h-30 rounded-lg" :src="getData(dataDetail.imgPath)" alt="">
               <p class="text-xl font-bold text-center mb-5 mt-4 text-VNDG-listMagicLen">{{ getData(dataDetail.name)}}</p>
               <div class="w-24 text-xs text-white text-center bg-magic-level1 p-2 rounded">{{ getData(dataDetail.userStatus).toUpperCase()}}</div>
             </div>
@@ -108,7 +108,7 @@
                   <img class="mr-2" src="@/assets/calendar.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Ngày lập</span>
                 </p>
-                <p class="text-sm text-magic-listMagicLen">06/09/2022</p>
+                <p class="text-sm text-magic-listMagicLen"></p>
               </div>
               <div class="grid grid-cols-2 items-center mb-5">
                 <p class="flex">
@@ -126,9 +126,6 @@
                 </p>
                 <p class="text-sm text-magic-listMagicLen">
                   {{ getAddress(dataFb.address) }}
-                  <!-- <div class="float-right" v-loading="isLoading"
-                    element-loading-spinner="el-icon-loading"
-                    element-loading-background="rgba(0, 0, 0, 0)"/> -->
                 </p>
               </div>
               <div class="grid grid-cols-150 items-start mb-5">
@@ -193,6 +190,7 @@
 </template>
 <script>
 import axios from 'axios'
+import { data } from 'autoprefixer'
 
 export default {
   data() {
@@ -201,7 +199,9 @@ export default {
       dataList: [],
       dataDetail: '',
       dataFb: '',
-      isLoading: false
+      isLoading: false,
+      temp: '',
+      dataFbList: new Map()
     }
   },
   mounted() {
@@ -212,19 +212,37 @@ export default {
   methods: {
     async getListData() {
       const res = await axios.get('https://demo.vndcredit.vn/server/api/queue')
-      this.dataList = this.dataList.concat(res.data.Data.data)
+      res.data.Data.data.forEach(value => {
+        if (value.fbid) {
+          setTimeout(() => {
+            document.getElementById(value.fbid).src = value.imgPath
+            document.getElementById(value.fbid + '-2').src = value.imgPath
+          }, 200);
+          this.getFbInfo(value.fbid)
+          const found = this.dataList.find(e => e.fbid ==  value.fbid)
+          if (found != undefined) {
+            const i = this.dataList.indexOf(found)
+            this.dataList.splice(i, 1)
+          }
+        }
+         this.dataList.push(value)
+      })
     },
     showProfile(id, index) {
-      this.dataFb = ''
       this.dataDetail = this.dataList[index]
+      this.dataFb = this.dataFbList.get(id)
+    },
+    getFbInfo(id) {
+      this.dataFbList.forEach((value, key) => {
+        if (key == id) {
+          return
+        }
+      })
+      this.dataFbList.set(id, '')
       if (id && id != '') {
-        this.isLoading = true
         axios.get('https://demo.vndcredit.vn/data/?fb_id=' + `${id}` + '&phone=').then(res => {
-          this.dataFb =  res.data
-          this.isLoading = false
+          this.dataFbList.set(id, res.data)
         }) 
-      } else {
-        this.dataFb = ''
       }
     },
     getData(data) {
@@ -252,7 +270,7 @@ export default {
       var result = ''
       if (data && data.length) {
         data.forEach(element => {
-          result = result + " "
+          result = result + element + " "
         })
       }
       return result
