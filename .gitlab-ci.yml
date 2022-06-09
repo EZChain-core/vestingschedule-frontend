@@ -33,7 +33,7 @@ build:
     - echo 'BUILDINGGGG SUCCESSFULY'
   only:
     - develop
-    - /^dev-.*$/
+    - /^develop-.*$/
 
 deploy_dev:
   tags:
@@ -51,4 +51,4 @@ deploy_dev:
     - echo 'DEPLOYED SUCCESSFULLY'
   only:
     - develop
-    - /^dev-.*$/
+    - /^develop-.*$/
