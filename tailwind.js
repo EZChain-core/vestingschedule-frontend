@@ -41,7 +41,8 @@ module.exports = {
       gridTemplateColumns: {
         // Simple 16 column grid
         '16': '348px 1fr',
-        '150': '190px 1fr'
+        '150': '190px 1fr',
+        '245': '245px 1fr'
       },
       colors: {
         magic: {
@@ -50,7 +51,8 @@ module.exports = {
           level1: '#FFC207',
           level2: '#5F69E7',
           level3: '#C1C5D7',
-          level4: '#868A9E'
+          level4: '#868A9E',
+          level5: '#391ED2'
         },
         VNDG: {
           borderMagic: '#E6EBF4',

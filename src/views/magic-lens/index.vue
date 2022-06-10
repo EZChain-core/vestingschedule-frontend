@@ -1,10 +1,20 @@
 <template>
   <div class="min-w-full">
     <div class="header shadow-lg bg-white w-full h-24 flex items-center">
-      <div class="container mx-auto ">
-        <p class="block min-w-full" href="/">
-          <img class="w-36 h-11" src="@/assets/Logo-VNDG.png" alt="">
-        </p>
+      <div class="container mx-auto">
+        <div class="grid grid-cols-2">
+          <div class="flex justify-between items-center">
+            <img class="w-36 h-11" src="@/assets/Logo-VNDG.png" alt="">
+            <router-link class="px-6 py-3 border-b-4 border-solid border-magic-level2" :to="{path: '/demo'}">
+              <span class="text-center text-sm text-magic-listMagicLen">Danh sách người vào</span>
+            </router-link>
+          </div>
+          <div class="flex justify-start items-center">
+            <router-link class="px-6 py-3" :to="{path: '/demo/search'}">
+              <span class="text-center text-sm text-magic-level4">Tìm kiếm người vào</span>
+            </router-link>
+          </div>
+        </div>
       </div>
     </div>
     <div class="pb-24">
@@ -201,13 +211,14 @@ export default {
       dataFb: '',
       isLoading: false,
       temp: '',
-      dataFbList: new Map()
+      dataFbList: new Map(),
+      activeName: 'first'
     }
   },
   mounted() {
-    setInterval(() => {
-      this.getListData()
-    }, 2000)
+    // setInterval(() => {
+    //   this.getListData()
+    // }, 10000)
   },
   methods: {
     async getListData() {
