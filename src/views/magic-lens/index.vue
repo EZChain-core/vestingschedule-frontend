@@ -177,8 +177,8 @@
                   <img class="mr-2" src="@/assets/user2.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Thông tin đồng nghiệp:</span>
                 </p>
-                <div v-if="dataFb != '' && dataFb.co-worker && dataFb.co-worker.length">
-                  <div v-for="item in dataFb.co-worker" :key="item">
+                <div v-if="dataFb != '' && dataFb['co-worker'] && dataFb['co-worker'].length">
+                  <div v-for="item in dataFb['co-worker']" :key="item">
                     <p class="text-sm text-magic-listMagicLen">
                       {{ item.name + '(' + item.phone + ", "}}
                       <a class="underline" style="color: blue" :href="getLinkFb2(item.facebook_link)" target="_blank">
