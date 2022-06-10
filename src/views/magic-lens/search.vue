@@ -47,7 +47,7 @@
                   <img class="mr-2" src="@/assets/user2.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Thông tin người thân</span>
                 </p>
-                <ul class="list-disc">
+                <ul v-if="dataList.homie" class="list-disc">
                   <li v-for="(items, index) in dataList.homie" :key="index" class="text-sm text-magic-listMagicLen">{{ items.name }} (sdt {{ items.phone }},<a
                     :href="items.facebook_link"
                     class="underline"
@@ -77,8 +77,8 @@
                   <img class="mr-2" src="@/assets/user2.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Thông tin đồng nghiệp:</span>
                 </p>
-                <ul class="list-disc">
-                  <li v-for="(items, index) in dataList.co-worker" :key="index" class="text-sm text-magic-listMagicLen">{{ items.name }} (sdt {{ items.phone }},<a
+                <ul v-if="dataList['co-worker']" class="list-disc">
+                  <li v-for="(items, index) in dataList['co-worker']" :key="index" class="text-sm text-magic-listMagicLen">{{ items.name }} (sdt {{ items.phone }},<a
                     :href="items.facebook_link"
                     class="underline"
                   >Facebook</a> )
