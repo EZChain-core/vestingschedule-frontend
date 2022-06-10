@@ -24,90 +24,23 @@
           <div class="rounded shadow-md bg-white p-6">
             <div class="flex justify-center items-center flex-col">
               <h2 class="text-sm font-bold text-left w-full text-VNDG-listMagicLen mb-1">Facebook ID</h2>
-              <el-input v-model="facebookID" placeholder="Facebook ID" />
+              <el-input v-model="facebookID" placeholder="Facebook ID" @keyup.enter.native="search()" />
               <el-button class="mt-4 bg-magic-level5 text-yellow-50 w-full" @click="search()">Tìm kiếm</el-button>
             </div>
             <div class="flex justify-center items-center flex-col mt-8">
               <h2 class="text-sm font-bold text-left w-full text-VNDG-listMagicLen mb-1">Số điện thoại</h2>
-              <el-input v-model="phoneNumber" placeholder="Số điện thoại" />
+              <el-input v-model="phoneNumber" placeholder="Số điện thoại" @keyup.enter.native="search()" />
               <el-button class="mt-4 bg-magic-level5 text-yellow-50 w-full" @click="search()">Tìm kiếm</el-button>
             </div>
           </div>
           <div v-if="dataList && !isLoading" class="shadow grid grid-cols-2 pt-7 pl-10 pr-6 gap-6 pb-16">
-            <div class="flex flex-col">
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/user.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Họ tên</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">Nguyễn Thị Tú Uyên</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/calendar.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Ngày sinh</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">11/11/2001</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/pen.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Số chứng minh nhân dân</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">00008888</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/phone.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Số điện thoại</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">00008888</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/facebook.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Facebook</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen underline">Link</p>
-              </div>
-            </div>
-            <div class="flex flex-col">
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/location.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Quê quán</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">Quận Cầu Giấy, thành phố Hà Nội</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/pen.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Số tài khoản</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">012345666999</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/calendar.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Ngày lập</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">06/09/2022</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/copy.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Trạng thái</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">Người cao cấp</p>
-              </div>
-            </div>
             <div class="flex flex-col">
               <div class="grid grid-cols-150 items-start mb-5">
                 <p class="flex">
                   <img class="mr-2" src="@/assets/location.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Địa chỉ tạm trú</span>
                 </p>
-                <p class="text-sm text-magic-listMagicLen">Quận Cầu Giấy, thành phố Hà Nội</p>
+                <p class="text-sm text-magic-listMagicLen">{{ address }}</p>
               </div>
               <div class="grid grid-cols-150 items-start mb-5">
                 <p class="flex">
@@ -115,17 +48,10 @@
                   <span class="text-sm font-normal text-magic-level4">Thông tin người thân</span>
                 </p>
                 <ul class="list-disc">
-                  <li class="text-sm text-magic-listMagicLen">Bố ruột: Nguyễn Thành Nam (sdt 0171973917,<span
+                  <li v-for="(items, index) in dataList.homie" :key="index" class="text-sm text-magic-listMagicLen">{{ items.name }} (sdt {{ items.phone }},<a
+                    :href="items.facebook_link"
                     class="underline"
-                  >Facebook</span> )
-                  </li>
-                  <li class="text-sm text-magic-listMagicLen">Mẹ ruột: Nguyễn Thành Nam (sdt 0171973917, <span
-                    class="underline"
-                  >Facebook</span>)
-                  </li>
-                  <li class="text-sm text-magic-listMagicLen">Em ruột: Nguyễn Thành Nam (sdt 0171973917, <span
-                    class="underline"
-                  >Facebook</span>)
+                  >Facebook</a> )
                   </li>
                 </ul>
                 <!-- <p class="text-sm text-magic-listMagicLen">Ổn định</p> -->
@@ -135,7 +61,7 @@
                   <img class="mr-2" src="@/assets/job.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Thông tin công việc</span>
                 </p>
-                <p class="text-sm text-magic-listMagicLen">Ổn định</p>
+                <p class="text-sm text-magic-listMagicLen">{{ dataList.job_status }}</p>
               </div>
             </div>
             <div class="flex flex-col">
@@ -144,7 +70,7 @@
                   <img class="mr-2" src="@/assets/location.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Địa làm việc</span>
                 </p>
-                <p class="text-sm text-magic-listMagicLen">Phường Quan Hoa, Quận Cầu Giấy, thành phố Hà Nội</p>
+                <p class="text-sm text-magic-listMagicLen">{{ addressWord }}</p>
               </div>
               <div class="grid grid-cols-150 items-start mb-5">
                 <p class="flex">
@@ -152,13 +78,10 @@
                   <span class="text-sm font-normal text-magic-level4">Thông tin đồng nghiệp:</span>
                 </p>
                 <ul class="list-disc">
-                  <li class="text-sm text-magic-listMagicLen">Sếp: Nguyễn Thành Nam (sdt 0171973917, <span
+                  <li v-for="(items, index) in dataList.co-worker" :key="index" class="text-sm text-magic-listMagicLen">{{ items.name }} (sdt {{ items.phone }},<a
+                    :href="items.facebook_link"
                     class="underline"
-                  >Facebook</span> )
-                  </li>
-                  <li class="text-sm text-magic-listMagicLen">Cấp dưới: Nguyễn Thành Nam (sdt 0171973917, <span
-                    class="underline"
-                  >Facebook</span>)
+                  >Facebook</a> )
                   </li>
                 </ul>
               </div>
@@ -189,7 +112,8 @@ export default {
       phoneNumber: '',
       facebookID: '',
       isLoading: false,
-      address: ''
+      address: '',
+      addressWord: ''
 
     }
   },
@@ -198,12 +122,13 @@ export default {
   methods: {
     async search() {
       this.isLoading = true
-      //   id = '100005227800848'
+      //   id = '100005227800848 0392748933'
       const res = await axios.get('https://demo.vndcredit.vn/data/?fb_id=' + `${this.facebookID}` + '&phone=' + `${this.phoneNumber}`)
       if (res.data) {
         this.isLoading = false
         this.dataList = res.data
         this.address = res.data.address.reverse().toString()
+        this.addressWord = res.data.work_address.reverse().toString()
         console.log(this.address)
         console.log(res.data)
       }
