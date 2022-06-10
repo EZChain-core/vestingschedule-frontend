@@ -37,6 +37,13 @@
             <div class="flex flex-col">
               <div class="grid grid-cols-150 items-start mb-5">
                 <p class="flex">
+                  <img class="mr-2 opacity-50" src="@/assets/crown.svg" alt="">
+                  <span class="text-sm font-normal text-magic-level4">Credit Score</span>
+                </p>
+                <p class="text-sm text-magic-listMagicLen">{{ dataList.score }}</p>
+              </div>
+              <div class="grid grid-cols-150 items-start mb-5">
+                <p class="flex">
                   <img class="mr-2" src="@/assets/location.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Địa chỉ tạm trú</span>
                 </p>
@@ -131,8 +138,8 @@ export default {
       if (res.data) {
         this.isLoading = false
         this.dataList = res.data
-        this.address = res.data.address.reverse().toString()
-        this.addressWord = res.data.work_address.reverse().toString()
+        this.address = res.data.address.toString()
+        this.addressWord = res.data.work_address.toString()
         console.log(this.address)
         console.log(res.data)
       }
