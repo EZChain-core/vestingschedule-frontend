@@ -48,8 +48,10 @@
                   <span class="text-sm font-normal text-magic-level4">Thông tin người thân</span>
                 </p>
                 <ul v-if="dataList.homie" class="list-disc">
-                  <li v-for="(items, index) in dataList.homie" :key="index" class="text-sm text-magic-listMagicLen">{{ items.name }} (sdt {{ items.phone }},<a
-                    :href="items.facebook_link"
+                  <li v-for="(items, index) in dataList.homie" :key="index" class="text-sm text-magic-listMagicLen">{{ items.name }} (sdt {{ items.phone }} <a
+                    v-if="items.facebook_link"
+                    target="_blank"
+                    :href="'https://'+items.facebook_link"
                     class="underline"
                   >Facebook</a> )
                   </li>
@@ -78,8 +80,10 @@
                   <span class="text-sm font-normal text-magic-level4">Thông tin đồng nghiệp:</span>
                 </p>
                 <ul v-if="dataList['co-worker']" class="list-disc">
-                  <li v-for="(items, index) in dataList['co-worker']" :key="index" class="text-sm text-magic-listMagicLen">{{ items.name }} (sdt {{ items.phone }},<a
-                    :href="items.facebook_link"
+                  <li v-for="(items, index) in dataList['co-worker']" :key="index" class="text-sm text-magic-listMagicLen">{{ items.name }} (sdt {{ items.phone }} <a
+                    v-if="items.facebook_link"
+                    target="_blank"
+                    :href="'https://'+items.facebook_link"
                     class="underline"
                   >Facebook</a> )
                   </li>
