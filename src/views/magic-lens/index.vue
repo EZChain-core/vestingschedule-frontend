@@ -200,7 +200,6 @@
 </template>
 <script>
 import axios from 'axios'
-import { data } from 'autoprefixer'
 
 export default {
   data() {
@@ -216,9 +215,9 @@ export default {
     }
   },
   mounted() {
-    // setInterval(() => {
-    //   this.getListData()
-    // }, 10000)
+    setInterval(() => {
+      this.getListData()
+    }, 2000)
   },
   methods: {
     async getListData() {
