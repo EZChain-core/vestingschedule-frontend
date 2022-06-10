@@ -11,7 +11,7 @@
           </div>
           <div class="flex justify-start items-center">
             <router-link class="px-6 py-3" :to="{path: '/demo/search'}">
-              <span class="text-center text-sm text-magic-level4">Tìm kiếm người vào</span>
+              <span class="text-center text-sm text-magic-level4">Tìm kiếm thông tin</span>
             </router-link>
           </div>
         </div>
