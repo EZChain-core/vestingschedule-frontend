@@ -34,14 +34,12 @@
           </div>
         </div>
       </div>
-      <div
-        v-show="dataDetail" class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
+      <div class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
         <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Chi tiết người vào</h2>
         <div class="grid grid-cols-16 gap-x-8">
           <div class="rounded shadow-md bg-white p-6">
-            <div class="flex justify-center items-center flex-col">
-              <img v-if="getData(dataDetail.imgPath) == ''" class="w-30 h-30 rounded-lg" src="@/assets/default.svg" alt="">
-              <img :id="dataDetail.fbid + '-2'" v-else class="w-30 h-30 rounded-lg" :src="getData(dataDetail.imgPath)" alt="">
+            <div v-show="getData(dataDetail.imgPath) != ''" class="flex justify-center items-center flex-col">
+              <img :id="dataDetail.fbid + '-2'" class="w-30 h-30 rounded-lg" :src="getData(dataDetail.imgPath)" alt="">
               <p class="text-xl font-bold text-center mb-5 mt-4 text-VNDG-listMagicLen">{{ getData(dataDetail.name)}}</p>
               <div class="w-24 text-xs text-white text-center bg-magic-level1 p-2 rounded">{{ getData(dataDetail.userStatus).toUpperCase()}}</div>
             </div>
