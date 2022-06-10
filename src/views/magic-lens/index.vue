@@ -17,7 +17,7 @@
             class="flex justify-center flex-col items-center cursor-pointer mr-5"
             @click="showProfile(item.fbid, index)"
           >
-            <img :id="item.fbid" class="w-30 h-30 rounded-lg" :src="item.imgPath">
+            <img :id="item.fbid == '' ? index : item.fib" class="w-30 h-30 rounded-lg" :src="item.imgPath">
             <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">{{
               item.userStatus.toUpperCase()
             }}</p>
@@ -125,7 +125,7 @@
                   <span class="text-sm font-normal text-magic-level4">Địa chỉ tạm trú</span>
                 </p>
                 <p class="text-sm text-magic-listMagicLen">
-                  {{ getAddress(dataFb.address) }}
+                  {{ dataFb == '' ? '' : dataFb.address ? getAddress(dataFb.address) : '' }}
                 </p>
               </div>
               <div class="grid grid-cols-150 items-start mb-5">
@@ -133,7 +133,7 @@
                   <img class="mr-2" src="@/assets/user2.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Thông tin người thân</span>
                 </p>
-                <div v-if="dataFb.homie && dataFb.homie.length" class="list-disc">
+                <div v-if="dataFb != '' && dataFb.homie && dataFb.homie.length" class="list-disc">
                   <div v-for="item in dataFb.homie" :key="item">
                     <p class="text-sm text-magic-listMagicLen">
                       {{ item.name + '(' + item.phone + ", "}}
@@ -151,7 +151,7 @@
                   <img class="mr-2" src="@/assets/job.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Thông tin công việc</span>
                 </p>
-                <p class="text-sm text-magic-listMagicLen">{{dataFb.job_status}}</p>
+                <p class="text-sm text-magic-listMagicLen">{{dataFb == '' ? '' : dataFb.job_status}}</p>
               </div>
             </div>
             <div v-show="showDetail" class="flex flex-col">
@@ -161,7 +161,7 @@
                   <span class="text-sm font-normal text-magic-level4">Địa làm việc</span>
                 </p>
                 <p class="text-sm text-magic-listMagicLen">
-                  {{ getAddress(dataFb.work_address) }}
+                  {{ dataFb == '' ? '' : getAddress(dataFb.work_address) }}
                 </p>
               </div>
               <div class="grid grid-cols-150 items-start mb-5">
@@ -169,7 +169,7 @@
                   <img class="mr-2" src="@/assets/user2.svg" alt="">
                   <span class="text-sm font-normal text-magic-level4">Thông tin đồng nghiệp:</span>
                 </p>
-                <div v-if="dataFb.co-worker && dataFb.co-worker.length">
+                <div v-if="dataFb != '' && dataFb.co-worker && dataFb.co-worker.length">
                   <div v-for="item in dataFb.co-worker" :key="item">
                     <p class="text-sm text-magic-listMagicLen">
                       {{ item.name + '(' + item.phone + ", "}}
@@ -215,7 +215,7 @@ export default {
       res.data.Data.data.forEach(value => {
         if (value.fbid) {
           setTimeout(() => {
-            document.getElementById(value.fbid).src = value.imgPath
+            document.getElementById(value.fbid == '' ? index : value.fbid).src = value.imgPath
             document.getElementById(value.fbid + '-2').src = value.imgPath
           }, 200);
           const found = this.dataList.find(e => e.fbid ==  value.fbid)
@@ -231,7 +231,13 @@ export default {
     },
     showProfile(id, index) {
       this.dataDetail = this.dataList[index]
-      this.dataFb = this.dataFbList.get(id)
+      if (id && id  != "") {
+        this.dataFb = this.dataFbList.get(id)
+      } else {
+        this.dataFb = ''
+        document.getElementById(index).src = this.dataDetail.imgPath
+      }
+      console.log('fffff', this.dataFb)
     },
     getFbInfo(id) {
       this.dataFbList.forEach((value, key) => {
