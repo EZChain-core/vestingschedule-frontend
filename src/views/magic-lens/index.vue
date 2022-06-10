@@ -27,7 +27,7 @@
             class="flex justify-center flex-col items-center cursor-pointer mr-5"
             @click="showProfile(item.fbid, index)"
           >
-            <img :id="item.fbid == '' ? index : item.fib" class="w-30 h-30 rounded-lg" :src="item.imgPath">
+            <img :id="item.fbid" class="w-30 h-30 rounded-lg" :src="item.imgPath">
             <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">{{
               item.userStatus.toUpperCase()
             }}</p>
@@ -230,7 +230,7 @@ export default {
       res.data.Data.data.forEach(value => {
         if (value.fbid) {
           setTimeout(() => {
-            document.getElementById(value.fbid == '' ? index : value.fbid).src = value.imgPath
+            document.getElementById(value.fbid).src = value.imgPath
             document.getElementById(value.fbid + '-2').src = value.imgPath
           }, 200);
           const found = this.dataList.find(e => e.fbid ==  value.fbid)
@@ -276,7 +276,11 @@ export default {
     },
     getLinkFb(data) {
       if (data) {
-        return 'https://fb.com/' + data
+        if (data.includes('unknown')) {
+          return ''
+        } else {
+          return 'https://fb.com/' + data
+        }
       } else {
         return ''
       }
