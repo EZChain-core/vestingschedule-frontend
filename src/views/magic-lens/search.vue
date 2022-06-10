@@ -11,7 +11,7 @@
           </div>
           <div class="flex justify-start items-center">
             <router-link class="px-6 py-3 border-b-4 border-solid border-magic-level2" :to="{path: '/demo/search'}">
-              <span class="text-center text-sm text-magic-listMagicLen">Tìm kiếm người vào</span>
+              <span class="text-center text-sm text-magic-listMagicLen">Tìm kiếm thông tin</span>
             </router-link>
           </div>
         </div>
@@ -19,7 +19,7 @@
     </div>
     <div class="pb-24">
       <div class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
-        <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Tìm kiếm người vào</h2>
+        <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Tìm kiếm thông tin</h2>
         <div class="grid grid-cols-245 gap-x-8">
           <div class="rounded shadow-md bg-white p-6">
             <div class="flex justify-center items-center flex-col">
