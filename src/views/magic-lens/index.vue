@@ -32,7 +32,7 @@
                 label="Address"
                 width="200"
               />
-              <el-table-column label="StartTime">
+              <el-table-column label="StartTime (UTC)">
                 <template slot-scope="scope">
                   <div>
                     {{ formatDate(scope.row.schedule.start.toNumber()) }}
@@ -41,7 +41,7 @@
               </el-table-column>
               <el-table-column
                 prop="address"
-                label="EndTime">
+                label="EndTime (UTC)">
                   <template slot-scope="scope">
                   <div>
                     {{ formatDate((scope.row.schedule.start.add(scope.row.schedule.duration)).toNumber()) }}
