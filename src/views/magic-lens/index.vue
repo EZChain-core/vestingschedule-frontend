@@ -32,10 +32,10 @@
                 label="Address"
                 width="200"
               />
-              <el-table-column label="StartTime (epoch -> UTC)" >
+              <el-table-column label="StartTime (epoch -> UTC)">
                 <template slot-scope="scope">
                   <div>
-                    {{formatDate(scope.row.schedule.start)}}
+                    {{ formatDate(scope.row.schedule.start.toBigInt()) }}
                   </div>
                 </template>
               </el-table-column>
@@ -83,10 +83,9 @@
     <div class="flex justify-center items-center mb-10">
       <el-pagination
         :page-size="pageSize"
-        :pager-count="10"
+        :page-count="pageCount"
         :background="true"
         layout="prev, pager, next"
-        :total="tableData.length*pageCount"
         @current-change="changePage"
       />
     </div>
@@ -98,10 +97,7 @@ const ethers = require('ethers')
 
 const RPC = process.env.RPC || 'https://api.ezchain.com/ext/bc/C/rpc'
 const provider = new ethers.providers.JsonRpcProvider({ url: RPC, timeout: 6000 })
-const pageSize = 10
-
-const vestingIDPromises = []
-const vestingSchedulePromises = []
+const pageSize = 50
 export default {
   data() {
     return {
@@ -109,10 +105,10 @@ export default {
       pageSize,
       tableData: [],
       page: 1,
-      vestingIDPromises,
+      vestingIDPromises: [],
       provider,
       pageCount: 1,
-      vestingSchedulePromises
+      vestingSchedulePromises: []
     }
   },
   created() {
@@ -128,6 +124,9 @@ export default {
     changePage(page) {
       console.log(page)
       this.page = page
+      this.tableData = []
+      this.vestingIDPromises = []
+      this.vestingSchedulePromises = []
       this.listSchedules(page)
     },
     async listSchedules(pages) {
@@ -158,20 +157,20 @@ export default {
           contract.getVestingIdAtIndex(i).then(result => { resolve({ index: i, vestingID: result }) })
         })
 
-        vestingIDPromises.push(id)
+        this.vestingIDPromises.push(id)
       }
 
-      const vestingIDs = await Promise.all(vestingIDPromises)
+      const vestingIDs = await Promise.all(this.vestingIDPromises)
       console.log(vestingIDs)
 
       for (const id of vestingIDs) {
         const schedule = new Promise(resolve => {
           contract.getVestingSchedule(id.vestingID).then(result => { resolve({ vestingID: id.vestingID, schedule: result }) })
         })
-        vestingSchedulePromises.push(schedule)
+        this.vestingSchedulePromises.push(schedule)
       }
 
-      const schedules = await Promise.all(vestingSchedulePromises)
+      const schedules = await Promise.all(this.vestingSchedulePromises)
       console.log(schedules)
       this.tableData = schedules
       if (this.tableData) {
