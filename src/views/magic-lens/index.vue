@@ -12,7 +12,7 @@
     <div class="pb-24 mb-10">
       <div class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
         <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">List Vesting Schedule</h2>
-        <div class="no_scroll flex items-center gap-6 overflow-x-auto pb-6">
+        <div class="no_scroll flex items-center flex-col gap-6 overflow-x-auto pb-6">
           <template>
             <el-table
               v-loading="loading"
@@ -77,17 +77,17 @@
               </el-table-column>
             </el-table>
           </template>
+          <div class="flex justify-center items-center mb-10">
+            <el-pagination
+              :page-size="pageSize"
+              :page-count="pageCount"
+              :background="true"
+              layout="prev, pager, next"
+              @current-change="changePage"
+            />
+          </div>
         </div>
       </div>
-    </div>
-    <div class="flex justify-center items-center mb-10">
-      <el-pagination
-        :page-size="pageSize"
-        :page-count="pageCount"
-        :background="true"
-        layout="prev, pager, next"
-        @current-change="changePage"
-      />
     </div>
   </div>
 </template>
