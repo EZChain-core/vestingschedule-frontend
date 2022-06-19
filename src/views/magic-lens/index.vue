@@ -1,8 +1,8 @@
 <template>
   <div class="min-w-full" style="width: 100%">
-    <div class="header shadow-lg bg-white w-full h-24 flex items-center">
+    <div class="header shadow-lg bg-white w-full h-24 flex items-center" style="box-shadow: 0px 0px 0px 1fr lightgray;">
       <div class="container mx-auto" style="margin: 0 auto; max-width: 1400px">
-        <div class="grid grid-cols-2">
+        <div style="padding: 30px">
           <div>
             <img class="w-36 h-11" src="@/assets/Ezchain-logo-1.svg" alt="">
           </div>
@@ -134,7 +134,6 @@ export default {
     },
 
     changePage(page) {
-      console.log(page)
       this.page = page
       this.tableData = []
       this.vestingIDPromises = []
@@ -163,7 +162,6 @@ export default {
         limit = pageSize
       }
       this.pageCount = pageCount
-      console.log(pageCount, offset, limit)
 
       for (let i = offset; i < offset + limit; i++) {
         const id = new Promise(resolve => {
@@ -174,7 +172,6 @@ export default {
       }
 
       const vestingIDs = await Promise.all(this.vestingIDPromises)
-      console.log(vestingIDs)
 
       for (const id of vestingIDs) {
         const schedule = new Promise(resolve => {
@@ -184,25 +181,12 @@ export default {
       }
 
       const schedules = await Promise.all(this.vestingSchedulePromises)
-      console.log(schedules)
       this.tableData = schedules
       if (this.tableData) {
         this.loading = false
       }
       return count, pageCount, schedules
     }
-  },
-  timeConverter(UNIX_timestamp) {
-    var a = new Date(UNIX_timestamp * 1000)
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    var year = a.getFullYear()
-    var month = months[a.getMonth()]
-    var date = a.getDate()
-    var hour = a.getHours()
-    var min = a.getMinutes()
-    var sec = a.getSeconds()
-    var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec
-    return time
   }
 }
 </script>
