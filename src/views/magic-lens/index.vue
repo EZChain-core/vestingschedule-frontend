@@ -32,24 +32,31 @@
                 label="Address"
                 width="200"
               />
-              <el-table-column label="StartTime (epoch -> UTC)">
+              <el-table-column label="StartTime">
                 <template slot-scope="scope">
                   <div>
-                    {{ formatDate(scope.row.schedule.start.toBigInt()) }}
+                    {{ formatDate(scope.row.schedule.start.toNumber()) }}
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 prop="address"
-                label="EndTime(=startTime + duration) (epoch -> UTC)"
-              />
+                label="EndTime">
+                  <template slot-scope="scope">
+                  <div>
+                    {{ formatDate((scope.row.schedule.start.add(scope.row.schedule.duration)).toNumber()) }}
+                  </div>
+                </template>
+
+              </el-table-column>
+
               <el-table-column
                 prop="address"
                 label="Total EZC"
               >
                 <template slot-scope="scope">
                   <div>
-                    {{ scope.row.schedule.amountTotal.toBigInt() }}
+                    {{ formatEZC(scope.row.schedule.amountTotal.toBigInt() ) }}
                   </div>
                 </template>
               </el-table-column>
@@ -59,7 +66,7 @@
               >
                 <template slot-scope="scope">
                   <div>
-                    {{ scope.row.schedule.released.toBigInt() }}
+                    {{ formatEZC(scope.row.schedule.released.toBigInt()) }}
                   </div>
                 </template>
               </el-table-column>
@@ -117,10 +124,15 @@ export default {
   methods: {
     formatDate(value) {
       if (value) {
-        return moment(value).format('DD/MM/YYYY HH:mm:ss')
+        return moment.unix(value).utc().format('DD/MM/YYYY HH:mm:ss')
       }
       return ''
     },
+
+    formatEZC(value) {
+      return ethers.utils.formatEther(value.toString())
+    },
+
     changePage(page) {
       console.log(page)
       this.page = page
