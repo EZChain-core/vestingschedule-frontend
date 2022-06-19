@@ -32,26 +32,10 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/demo',
+    path: '/',
     component: () => import('@/views/magic-lens/index'),
     hidden: true
   },
-  {
-    path: '/demo/search',
-    component: () => import('@/views/magic-lens/search'),
-    hidden: true
-  },
-  // {
-  //   path: '/login',
-  //   component: () => import('@/views/login/index'),
-  //   hidden: true
-  // },
-  // {
-  //   path: '/ho-so/:id',
-  //   component: () => import('@/views/ho-so/_id.vue'),
-  //   hidden: true
-  // },
-
   {
     path: '/404',
     component: () => import('@/views/404'),

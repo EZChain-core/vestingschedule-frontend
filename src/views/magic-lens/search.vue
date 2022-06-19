@@ -4,7 +4,7 @@
       <div class="container mx-auto">
         <div class="grid grid-cols-2">
           <div class="flex justify-between items-center">
-            <img class="w-36 h-11" src="@/assets/Logo-VNDG.png" alt="">
+            <img class="w-36 h-11" src="@/assets/Ezchain-logo-1.svg" alt="">
             <router-link class="px-6 py-3" :to="{path: '/demo'}">
               <span class="text-center text-sm  text-magic-level4">Danh sách người vào</span>
             </router-link>

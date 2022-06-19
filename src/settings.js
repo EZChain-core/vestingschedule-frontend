@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'VNDCredit Demo',
+  title: 'EZChain List Vesting Schedule ',
 
   /**
    * @type {boolean} true | false

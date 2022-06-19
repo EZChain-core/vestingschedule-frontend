@@ -3,304 +3,194 @@
     <div class="header shadow-lg bg-white w-full h-24 flex items-center">
       <div class="container mx-auto">
         <div class="grid grid-cols-2">
-          <div class="flex justify-between items-center">
-            <img class="w-36 h-11" src="@/assets/Logo-VNDG.png" alt="">
-            <router-link class="px-6 py-3 border-b-4 border-solid border-magic-level2" :to="{path: '/demo'}">
-              <span class="text-center text-sm text-magic-listMagicLen">Danh sách người vào</span>
-            </router-link>
-          </div>
-          <div class="flex justify-start items-center">
-            <router-link class="px-6 py-3" :to="{path: '/demo/search'}">
-              <span class="text-center text-sm text-magic-level4">Tìm kiếm thông tin</span>
-            </router-link>
+          <div>
+            <img class="w-36 h-11" src="@/assets/Ezchain-logo-1.svg" alt="">
           </div>
         </div>
       </div>
     </div>
-    <div class="pb-24">
+    <div class="pb-24 mb-10">
       <div class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
-        <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Danh sách người vào</h2>
+        <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">List Vesting Schedule</h2>
         <div class="no_scroll flex items-center gap-6 overflow-x-auto pb-6">
-          <div
-            v-for="(item, index) in dataList"
-            :key="index"
-            class="flex justify-center flex-col items-center cursor-pointer mr-5"
-            @click="showProfile(item.fbid, index)"
-          >
-            <img :id="item.fbid" class="w-30 h-30 rounded-lg" :src="item.imgPath">
-            <p class="p-2 mt-3 text-center text-white rounded bg-magic-level1 text-xs w-24">{{
-              item.userStatus.toUpperCase()
-            }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="py-6 container mx-auto mt-8 px-11 rounded border border-solid border-magic-borderMagic">
-        <h2 class="text-xl font-bold mb-6 text-VNDG-listMagicLen">Chi tiết người vào</h2>
-        <div class="grid grid-cols-16 gap-x-8">
-          <div class="rounded shadow-md bg-white p-6">
-            <div v-show="getData(dataDetail.imgPath) != ''" class="flex justify-center items-center flex-col">
-              <img :id="dataDetail.fbid + '-2'" class="w-30 h-30 rounded-lg" :src="getData(dataDetail.imgPath)" alt="">
-              <p class="text-xl font-bold text-center mb-5 mt-4 text-VNDG-listMagicLen">{{ getData(dataDetail.name)}}</p>
-              <div class="w-24 text-xs text-white text-center bg-magic-level1 p-2 rounded">{{ getData(dataDetail.userStatus).toUpperCase()}}</div>
-            </div>
-          </div>
-          <div class="shadow grid grid-cols-2 pt-7 pl-10 pr-6 gap-6 pb-16 relative">
-            <button
-              type="success"
-              class="absolute -bottom-5 left-1/2 bg-magic-listMagicLen text-white p-2 rounded-lg"
-              @click="showDetail = !showDetail"
+          <template>
+            <el-table
+              v-loading="loading"
+              :data="tableData"
+              size="small"
+              stripe
+              border
+              style="width: 100%"
             >
-              {{ !showDetail ? 'Chi tiết' : 'Thu gọn' }} <i
-                :class="!showDetail ? 'el-icon-arrow-down' : 'el-icon-arrow-up'"
+              <el-table-column
+                prop="vestingID"
+                label="Vestingschedule ID"
+                width="250"
               />
-            </button>
-            <div class="flex flex-col">
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/user.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Họ tên</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">{{ getData(dataDetail.name)}}</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/calendar.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Ngày sinh</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">{{ getData(dataDetail.dob)}}</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/pen.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Số chứng minh nhân dân</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">{{ getData(dataDetail.idNum)}}</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/phone.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Số điện thoại</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">{{ getData(dataDetail.phoneNum)}}</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/facebook.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Facebook</span>
-                </p>
-                <a :href="getLinkFb(dataDetail.fbid)"
-                target="_blank">
-                  <p class="text-sm text-magic-listMagicLen underline" style="color: blue">
-                    {{  getLinkFb(dataDetail.fbid) == '' ? '' : 'Facebook'}}
-                    </p>
-                </a>
-              </div>
-            </div>
-            <div class="flex flex-col">
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/location.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Quê quán</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">{{ getData(dataDetail.address)}}</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/pen.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Số tài khoản</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">{{ getData(dataDetail.stk)}}</p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/calendar.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Ngày lập</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen"></p>
-              </div>
-              <div class="grid grid-cols-2 items-center mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/copy.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Trạng thái</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">{{ getData(dataDetail.userStatus).toUpperCase()}}</p>
-              </div>
-            </div>
-            <div v-show="showDetail">
-              <div class="grid grid-cols-150 items-start mb-5">
-                <p class="flex">
-                  <img class="mr-2 opacity-50" src="@/assets/crown.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Credit Score</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">{{ dataList.score }}</p>
-              </div>
-              <div class="grid grid-cols-150 items-start mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/location.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Địa chỉ tạm trú</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">
-                  {{ dataFb == '' ? '' : dataFb.address ? getAddress(dataFb.address) : '' }}
-                </p>
-              </div>
-              <div class="grid grid-cols-150 items-start mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/user2.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Thông tin người thân</span>
-                </p>
-                <div v-if="dataFb != '' && dataFb.homie && dataFb.homie.length" class="list-disc">
-                  <div v-for="item in dataFb.homie" :key="item">
-                    <p class="text-sm text-magic-listMagicLen">
-                      {{ item.name + '(' + item.phone + ", "}}
-                      <a class="underline" style="color: blue" :href="getLinkFb2(item.facebook_link)" target="_blank">
-                        {{getData(item.facebook_link) == '' ? '' : 'Facebook'}}
-                      </a>
-                      )
-                    </p>
+              <el-table-column
+                prop="schedule.beneficiary"
+                label="Address"
+                width="200"
+              />
+              <el-table-column label="StartTime (epoch -> UTC)" >
+                <template slot-scope="scope">
+                  <div>
+                    {{formatDate(scope.row.schedule.start)}}
                   </div>
-                </div>
-                <!-- <p class="text-sm text-magic-listMagicLen">Ổn định</p> -->
-              </div>
-              <div class="grid grid-cols-150 items-start mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/job.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Thông tin công việc</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">{{dataFb == '' ? '' : dataFb.job_status}}</p>
-              </div>
-            </div>
-            <div v-show="showDetail" class="flex flex-col">
-              <div class="grid grid-cols-150 items-start mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/location.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Địa làm việc</span>
-                </p>
-                <p class="text-sm text-magic-listMagicLen">
-                  {{ dataFb == '' ? '' : getAddress(dataFb.work_address) }}
-                </p>
-              </div>
-              <div class="grid grid-cols-150 items-start mb-5">
-                <p class="flex">
-                  <img class="mr-2" src="@/assets/user2.svg" alt="">
-                  <span class="text-sm font-normal text-magic-level4">Thông tin đồng nghiệp:</span>
-                </p>
-                <div v-if="dataFb != '' && dataFb['co-worker'] && dataFb['co-worker'].length">
-                  <div v-for="item in dataFb['co-worker']" :key="item">
-                    <p class="text-sm text-magic-listMagicLen">
-                      {{ item.name + '(' + item.phone + ", "}}
-                      <a class="underline" style="color: blue" :href="getLinkFb2(item.facebook_link)" target="_blank">
-                        {{getData(item.facebook_link) == '' ? '' : 'Facebook'}}
-                      </a>
-                      )
-                    </p>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="address"
+                label="EndTime(=startTime + duration) (epoch -> UTC)"
+              />
+              <el-table-column
+                prop="address"
+                label="Total EZC"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    {{ scope.row.schedule.amountTotal.toBigInt() }}
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="address"
+                label="Vested EZC"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    {{ scope.row.schedule.released.toBigInt() }}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="address"
+                label="Status"
+                width="100"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    <el-tag v-if="scope.row.schedule.locked === false" type="success">{{ scope.row.schedule.locked ? 'Locked' : 'Active' }}</el-tag>
+                    <el-tag v-else type="danger">{{ scope.row.schedule.locked ? 'Locked' : 'Active' }}</el-tag>
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
         </div>
       </div>
+    </div>
+    <div class="flex justify-center items-center mb-10">
+      <el-pagination
+        :page-size="pageSize"
+        :pager-count="10"
+        :background="true"
+        layout="prev, pager, next"
+        :total="tableData.length*pageCount"
+        @current-change="changePage"
+      />
     </div>
   </div>
 </template>
 <script>
-import axios from 'axios'
+import moment from 'moment'
+const ethers = require('ethers')
 
+const RPC = process.env.RPC || 'https://api.ezchain.com/ext/bc/C/rpc'
+const provider = new ethers.providers.JsonRpcProvider({ url: RPC, timeout: 6000 })
+const pageSize = 10
+
+const vestingIDPromises = []
+const vestingSchedulePromises = []
 export default {
   data() {
     return {
-      showDetail: false,
-      dataList: [],
-      dataDetail: '',
-      dataFb: '',
-      isLoading: false,
-      temp: '',
-      dataFbList: new Map(),
-      activeName: 'first'
+      loading: true,
+      pageSize,
+      tableData: [],
+      page: 1,
+      vestingIDPromises,
+      provider,
+      pageCount: 1,
+      vestingSchedulePromises
     }
   },
-  mounted() {
-    setInterval(() => {
-      this.getListData()
-    }, 2000)
+  created() {
+    this.listSchedules(this.page)
   },
   methods: {
-    async getListData() {
-      const res = await axios.get('https://demo.vndcredit.vn/server/api/queue')
-      res.data.Data.data.forEach(value => {
-        if (value.fbid) {
-          setTimeout(() => {
-            document.getElementById(value.fbid).src = value.imgPath
-            document.getElementById(value.fbid + '-2').src = value.imgPath
-          }, 200);
-          const found = this.dataList.find(e => e.fbid ==  value.fbid)
-          if (found != undefined) {
-            const i = this.dataList.indexOf(found)
-            this.dataList.splice(i, 1)
-          } else {
-            this.getFbInfo(value.fbid)
-          }
-        }
-         this.dataList.push(value)
-      })
-    },
-    showProfile(id, index) {
-      this.dataDetail = this.dataList[index]
-      if (id && id  != "") {
-        this.dataFb = this.dataFbList.get(id)
-      } else {
-        this.dataFb = ''
-        document.getElementById(index).src = this.dataDetail.imgPath
+    formatDate(value) {
+      if (value) {
+        return moment(value).format('DD/MM/YYYY HH:mm:ss')
       }
-      console.log('fffff', this.dataFb)
+      return ''
     },
-    getFbInfo(id) {
-      this.dataFbList.forEach((value, key) => {
-        if (key == id) {
-          return
-        }
-      })
-      this.dataFbList.set(id, '')
-      if (id && id != '') {
-        axios.get('https://demo.vndcredit.vn/data/?fb_id=' + `${id}` + '&phone=').then(res => {
-          this.dataFbList.set(id, res.data)
+    changePage(page) {
+      console.log(page)
+      this.page = page
+      this.listSchedules(page)
+    },
+    async listSchedules(pages) {
+      const page = pages
+      const abi = [{ 'type': 'constructor', 'stateMutability': 'nonpayable', 'inputs': [{ 'type': 'address', 'name': 'token_', 'internalType': 'address' }] }, { 'type': 'event', 'name': 'OwnershipTransferred', 'inputs': [{ 'type': 'address', 'name': 'previousOwner', 'internalType': 'address', 'indexed': true }, { 'type': 'address', 'name': 'newOwner', 'internalType': 'address', 'indexed': true }], 'anonymous': false }, { 'type': 'event', 'name': 'Released', 'inputs': [{ 'type': 'uint256', 'name': 'amount', 'internalType': 'uint256', 'indexed': false }], 'anonymous': false }, { 'type': 'event', 'name': 'Revoked', 'inputs': [], 'anonymous': false }, { 'type': 'fallback', 'stateMutability': 'payable' }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'bytes32', 'name': '', 'internalType': 'bytes32' }], 'name': 'computeNextVestingScheduleIdForHolder', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'computeReleasableAmount', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }] }, { 'type': 'function', 'stateMutability': 'pure', 'outputs': [{ 'type': 'bytes32', 'name': '', 'internalType': 'bytes32' }], 'name': 'computeVestingScheduleIdForAddressAndIndex', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'index', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'createVestingSchedule', 'inputs': [{ 'type': 'address', 'name': '_beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': '_start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': '_cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': '_duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': '_slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': '_revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': '_amount', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'tuple', 'name': '', 'internalType': 'struct TokenVesting.VestingSchedule', 'components': [{ 'type': 'bool', 'name': 'initialized', 'internalType': 'bool' }, { 'type': 'address', 'name': 'beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': 'amountTotal', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'released', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revoked', 'internalType': 'bool' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }], 'name': 'getLastVestingScheduleForHolder', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'address', 'name': '', 'internalType': 'address' }], 'name': 'getToken', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'bytes32', 'name': '', 'internalType': 'bytes32' }], 'name': 'getVestingIdAtIndex', 'inputs': [{ 'type': 'uint256', 'name': 'index', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'tuple', 'name': '', 'internalType': 'struct TokenVesting.VestingSchedule', 'components': [{ 'type': 'bool', 'name': 'initialized', 'internalType': 'bool' }, { 'type': 'address', 'name': 'beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': 'amountTotal', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'released', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revoked', 'internalType': 'bool' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }], 'name': 'getVestingSchedule', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'tuple', 'name': '', 'internalType': 'struct TokenVesting.VestingSchedule', 'components': [{ 'type': 'bool', 'name': 'initialized', 'internalType': 'bool' }, { 'type': 'address', 'name': 'beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': 'amountTotal', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'released', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revoked', 'internalType': 'bool' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }], 'name': 'getVestingScheduleByAddressAndIndex', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'index', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getVestingSchedulesCount', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getVestingSchedulesCountByBeneficiary', 'inputs': [{ 'type': 'address', 'name': '_beneficiary', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getVestingSchedulesTotalAmount', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getWithdrawableAmount', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [{ 'type': 'uint256', 'name': 'total', 'internalType': 'uint256' }], 'name': 'investorWithdraw', 'inputs': [{ 'type': 'bool', 'name': 'keepWrapped', 'internalType': 'bool' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'address', 'name': '', 'internalType': 'address' }], 'name': 'owner', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'release', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }, { 'type': 'uint256', 'name': 'amount', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'renounceOwnership', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'revoke', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'setLock', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'transferOwnership', 'inputs': [{ 'type': 'address', 'name': 'newOwner', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'withdraw', 'inputs': [{ 'type': 'uint256', 'name': 'amount', 'internalType': 'uint256' }] }, { 'type': 'receive', 'stateMutability': 'payable' }]
+      const contractAddress = '0x05E4dfbB6f26E568D846C95C0C716C4338fd1C0A'
+
+      const contract = new ethers.Contract(contractAddress, abi, provider)
+
+      // Tổng số schedules
+      const count = await contract.getVestingSchedulesCount()
+
+      // Tổng số trang
+      const pageCount = parseInt((count.toNumber() + pageSize - 1) / pageSize)
+      const offset = (page - 1) * pageSize
+
+      let limit
+      if (page === pageCount) {
+        limit = count % pageSize
+      } else {
+        limit = pageSize
+      }
+      this.pageCount = pageCount
+      console.log(pageCount, offset, limit)
+
+      for (let i = offset; i < offset + limit; i++) {
+        const id = new Promise(resolve => {
+          contract.getVestingIdAtIndex(i).then(result => { resolve({ index: i, vestingID: result }) })
         })
+
+        vestingIDPromises.push(id)
       }
-    },
-    getData(data) {
-      if (data) {
-        return data
-      } else {
-        return ''
-      }
-    },
-    getLinkFb(data) {
-      if (data) {
-        if (data.includes('unknown')) {
-          return ''
-        } else {
-          return 'https://fb.com/' + data
-        }
-      } else {
-        return ''
-      }
-    },
-    getLinkFb2(data) {
-      if (data) {
-        return 'https://' + data
-      } else {
-        return ''
-      }
-    },
-    getAddress(data) {
-      var result = ''
-      if (data && data.length) {
-        data.forEach(element => {
-          result = result + element + " "
+
+      const vestingIDs = await Promise.all(vestingIDPromises)
+      console.log(vestingIDs)
+
+      for (const id of vestingIDs) {
+        const schedule = new Promise(resolve => {
+          contract.getVestingSchedule(id.vestingID).then(result => { resolve({ vestingID: id.vestingID, schedule: result }) })
         })
+        vestingSchedulePromises.push(schedule)
       }
-      return result
+
+      const schedules = await Promise.all(vestingSchedulePromises)
+      console.log(schedules)
+      this.tableData = schedules
+      if (this.tableData) {
+        this.loading = false
+      }
+      return count, pageCount, schedules
     }
+  },
+  timeConverter(UNIX_timestamp) {
+    var a = new Date(UNIX_timestamp * 1000)
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    var year = a.getFullYear()
+    var month = months[a.getMonth()]
+    var date = a.getDate()
+    var hour = a.getHours()
+    var min = a.getMinutes()
+    var sec = a.getSeconds()
+    var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec
+    return time
   }
 }
 </script>
