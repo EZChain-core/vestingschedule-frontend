@@ -10,91 +10,21 @@
       </div>
     </div>
     <div style="margin: 0 auto; max-width: 1400px">
-      <div class="detail_container" style="padding: 40px">
-        <h2 style="font-weight: bold; margin: 20px 0; font-size: 20px;">List Vesting Schedule</h2>
-        <div style="flex-direction: column; display: flex;">
-          <template>
-            <el-table
-              v-loading="loading"
-              :data="tableData"
-              size="small"
-              stripe
-              border
-              style="width: 100%"
-              @row-click="showDetail"
-            >
-              <el-table-column
-                prop="vestingID"
-                label="Vestingschedule ID"
-                width="250"
-              />
-              <el-table-column
-                prop="schedule.beneficiary"
-                label="Address"
-                width="200"
-              />
-              <el-table-column label="StartTime (UTC)">
-                <template slot-scope="scope">
-                  <div>
-                    {{ formatDate(scope.row.schedule.start.toNumber()) }}
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="address"
-                label="EndTime (UTC)"
-              >
-                <template slot-scope="scope">
-                  <div>
-                    {{ formatDate((scope.row.schedule.start.add(scope.row.schedule.duration)).toNumber()) }}
-                  </div>
-                </template>
+      <div style="padding: 40px">
+        <h2 style="font-weight: bold; margin: 20px 0; font-size: 20px;">Detail Vesting</h2>
+        <div class="detail_container" style="flex-direction: column; display: flex;">
 
-              </el-table-column>
-
-              <el-table-column
-                prop="address"
-                label="Total EZC"
-              >
-                <template slot-scope="scope">
-                  <div>
-                    {{ formatEZC(scope.row.schedule.amountTotal.toBigInt() ) }}
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="address"
-                label="Vested EZC"
-              >
-                <template slot-scope="scope">
-                  <div>
-                    {{ formatEZC(scope.row.schedule.released.toBigInt()) }}
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="address"
-                label="Status"
-                width="100"
-              >
-                <template slot-scope="scope">
-                  <div>
-                    <el-tag v-if="scope.row.schedule.locked === false" type="success">{{ scope.row.schedule.locked ? 'Locked' : 'Active' }}</el-tag>
-                    <el-tag v-else type="danger">{{ scope.row.schedule.locked ? 'Locked' : 'Active' }}</el-tag>
-                  </div>
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>
-          <div class="flex justify-center items-center mb-10" style="display: flex; justify-content: center; align-items: center; margin-bottom: 50px; margin-top: 20px">
-            <el-pagination
-              :page-size="pageSize"
-              :page-count="pageCount"
-              :background="true"
-              layout="prev, pager, next"
-              @current-change="changePage"
-            />
+          <div>
+            <span style="font-weight: bold">Status: </span>
+            <el-tag v-if="tableData.schedule.locked === false" type="success">{{ tableData.schedule.locked ? 'Locked' : 'Active' }}</el-tag>
+            <el-tag v-else type="danger">{{ tableData.schedule.locked ? 'Locked' : 'Active' }}</el-tag>
           </div>
+          <p style="margin: 10px 0;"><b>Vesting schedule ID</b>: <span>{{tableData.vestingID}}</span></p>
+          <p style="margin: 10px 0;"><b>Address</b>: <span>{{tableData.schedule.beneficiary}}</span></p>
+          <p style="margin: 10px 0;"><b>Start Time</b>: <span>{{ formatDate(tableData.schedule.start.toNumber()) }}</span></p>
+          <p style="margin: 10px 0;"><b>End Time</b>: <span>{{ formatDate((tableData.schedule.start.add(tableData.schedule.duration)).toNumber()) }}</span></p>
+          <p style="margin: 10px 0;"><b>Total EZC</b>: <span>{{ formatEZC(tableData.schedule.amountTotal.toBigInt() ) }} EZC</span></p>
+          <p style="margin: 10px 0;"><b>Vested EZC</b>: <span>{{ formatEZC(tableData.schedule.released.toBigInt()) }} EZC</span></p>
         </div>
       </div>
     </div>
@@ -121,13 +51,10 @@ export default {
     }
   },
   created() {
-    this.listSchedules(this.page)
+    console.log('address', this.$route.params.address)
+    this.listSchedules(this.page, this.$route.params.address)
   },
   methods: {
-    showDetail(row, column, event) {
-      console.log(row)
-      this.$router.push({ path: `/${row.schedule.beneficiary}` })
-    },
     formatDate(value) {
       if (value) {
         return moment.unix(value).utc().format('DD/MM/YYYY HH:mm:ss')
@@ -143,10 +70,11 @@ export default {
       this.tableData = []
       this.vestingIDPromises = []
       this.vestingSchedulePromises = []
-      this.listSchedules(page)
+      this.listSchedules(page, this.$route.params.address)
     },
-    async listSchedules(pages) {
+    async listSchedules(pages, _address) {
       const page = pages
+      const address = String(_address)
       this.tableData = []
       const abi = [{ 'type': 'constructor', 'stateMutability': 'nonpayable', 'inputs': [{ 'type': 'address', 'name': 'token_', 'internalType': 'address' }] }, { 'type': 'event', 'name': 'OwnershipTransferred', 'inputs': [{ 'type': 'address', 'name': 'previousOwner', 'internalType': 'address', 'indexed': true }, { 'type': 'address', 'name': 'newOwner', 'internalType': 'address', 'indexed': true }], 'anonymous': false }, { 'type': 'event', 'name': 'Released', 'inputs': [{ 'type': 'uint256', 'name': 'amount', 'internalType': 'uint256', 'indexed': false }], 'anonymous': false }, { 'type': 'event', 'name': 'Revoked', 'inputs': [], 'anonymous': false }, { 'type': 'fallback', 'stateMutability': 'payable' }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'bytes32', 'name': '', 'internalType': 'bytes32' }], 'name': 'computeNextVestingScheduleIdForHolder', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'computeReleasableAmount', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }] }, { 'type': 'function', 'stateMutability': 'pure', 'outputs': [{ 'type': 'bytes32', 'name': '', 'internalType': 'bytes32' }], 'name': 'computeVestingScheduleIdForAddressAndIndex', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'index', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'createVestingSchedule', 'inputs': [{ 'type': 'address', 'name': '_beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': '_start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': '_cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': '_duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': '_slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': '_revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': '_amount', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'tuple', 'name': '', 'internalType': 'struct TokenVesting.VestingSchedule', 'components': [{ 'type': 'bool', 'name': 'initialized', 'internalType': 'bool' }, { 'type': 'address', 'name': 'beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': 'amountTotal', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'released', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revoked', 'internalType': 'bool' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }], 'name': 'getLastVestingScheduleForHolder', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'address', 'name': '', 'internalType': 'address' }], 'name': 'getToken', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'bytes32', 'name': '', 'internalType': 'bytes32' }], 'name': 'getVestingIdAtIndex', 'inputs': [{ 'type': 'uint256', 'name': 'index', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'tuple', 'name': '', 'internalType': 'struct TokenVesting.VestingSchedule', 'components': [{ 'type': 'bool', 'name': 'initialized', 'internalType': 'bool' }, { 'type': 'address', 'name': 'beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': 'amountTotal', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'released', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revoked', 'internalType': 'bool' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }], 'name': 'getVestingSchedule', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'tuple', 'name': '', 'internalType': 'struct TokenVesting.VestingSchedule', 'components': [{ 'type': 'bool', 'name': 'initialized', 'internalType': 'bool' }, { 'type': 'address', 'name': 'beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': 'amountTotal', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'released', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revoked', 'internalType': 'bool' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }], 'name': 'getVestingScheduleByAddressAndIndex', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'index', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getVestingSchedulesCount', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getVestingSchedulesCountByBeneficiary', 'inputs': [{ 'type': 'address', 'name': '_beneficiary', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getVestingSchedulesTotalAmount', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getWithdrawableAmount', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [{ 'type': 'uint256', 'name': 'total', 'internalType': 'uint256' }], 'name': 'investorWithdraw', 'inputs': [{ 'type': 'bool', 'name': 'keepWrapped', 'internalType': 'bool' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'address', 'name': '', 'internalType': 'address' }], 'name': 'owner', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'release', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }, { 'type': 'uint256', 'name': 'amount', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'renounceOwnership', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'revoke', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'setLock', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'transferOwnership', 'inputs': [{ 'type': 'address', 'name': 'newOwner', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'withdraw', 'inputs': [{ 'type': 'uint256', 'name': 'amount', 'internalType': 'uint256' }] }, { 'type': 'receive', 'stateMutability': 'payable' }]
       const contractAddress = '0x05E4dfbB6f26E568D846C95C0C716C4338fd1C0A'
@@ -154,10 +82,19 @@ export default {
       const contract = new ethers.Contract(contractAddress, abi, provider)
 
       // Tổng số schedules
-      const count = await contract.getVestingSchedulesCount()
+      let count
+      if (address != null) {
+        console.log(1)
+        count = await contract.getVestingSchedulesCountByBeneficiary(address)
+      } else {
+        console.log(2)
+
+        count = await contract.getVestingSchedulesCount()
+      }
 
       // Tổng số trang
       const pageCount = parseInt((count.toNumber() + pageSize - 1) / pageSize)
+
       const offset = (page - 1) * pageSize
 
       let limit
@@ -167,10 +104,15 @@ export default {
         limit = pageSize
       }
       this.pageCount = pageCount
+      console.log(pageCount, offset, limit)
 
       for (let i = offset; i < offset + limit; i++) {
         const id = new Promise(resolve => {
-          contract.getVestingIdAtIndex(i).then(result => { resolve({ index: i, vestingID: result }) })
+          if (address != null) {
+            contract.computeVestingScheduleIdForAddressAndIndex(address, i).then(result => { resolve({ index: i, vestingID: result }) })
+          } else {
+            contract.getVestingIdAtIndex(i).then(result => { resolve({ index: i, vestingID: result }) })
+          }
         })
 
         this.vestingIDPromises.push(id)
@@ -186,10 +128,9 @@ export default {
       }
 
       const schedules = await Promise.all(this.vestingSchedulePromises)
-      this.tableData = schedules
-      if (this.tableData) {
-        this.loading = false
-      }
+      this.tableData = schedules[0]
+      console.log(schedules)
+
       return schedules
     }
   }
@@ -201,7 +142,6 @@ export default {
   }
   .detail_container {
     padding: 30px;
-    margin-top: 30px;
-    border: 1px solid lightgrey;
+    border: 1px solid lightblue;
   }
 </style>

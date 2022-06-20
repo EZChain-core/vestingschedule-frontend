@@ -37,6 +37,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/:address',
+    component: () => import('@/views/magic-lens/detail'),
+    hidden: true
+  },
+  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
