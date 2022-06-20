@@ -132,7 +132,6 @@ export default {
     formatEZC(value) {
       return ethers.utils.formatEther(value.toString())
     },
-
     changePage(page) {
       this.page = page
       this.tableData = []
