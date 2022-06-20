@@ -24,6 +24,12 @@
               @row-click="showDetail"
             >
               <el-table-column
+                label="#"
+                width="80"
+                type="index"
+                :index="indexMethod"
+              />
+              <el-table-column
                 prop="vestingID"
                 label="Vestingschedule ID"
                 width="250"
@@ -124,6 +130,9 @@ export default {
     this.listSchedules(this.page)
   },
   methods: {
+    indexMethod(index) {
+      return this.page * this.pageSize - this.pageSize + index + 1
+    },
     showDetail(row, column, event) {
       console.log(row)
       this.$router.push({ path: `/${row.schedule.beneficiary}` })
