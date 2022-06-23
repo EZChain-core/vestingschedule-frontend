@@ -4,7 +4,7 @@
       <div style="margin: 0 auto; max-width: 1400px">
         <div style="padding: 30px">
           <div>
-            <img class="w-36 h-11" src="@/assets/Ezchain-logo-1.svg" alt="">
+            <a href="/"><img class="w-36 h-11" src="@/assets/Ezchain-logo-1.svg" alt=""></a>
           </div>
         </div>
       </div>

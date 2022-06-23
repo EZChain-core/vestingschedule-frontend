@@ -22,6 +22,8 @@
               border
               style="width: 100%"
               @row-click="showDetail"
+              @cell-mouse-enter="underline_address"
+              @cell-mouse-leave="remove_underline_address"
             >
               <el-table-column
                 label="#"
@@ -137,6 +139,19 @@ export default {
       console.log(row)
       this.$router.push({ path: `/${row.schedule.beneficiary}` })
     },
+
+    underline_address(row, column, e) {
+      if (column.label === 'Address') {
+        e.classList.add('underline')
+      }
+    },
+
+    remove_underline_address(row, column, e) {
+      if (column.label === 'Address') {
+        e.classList.remove('underline')
+      }
+    },
+
     formatDate(value) {
       if (value) {
         return moment.unix(value).utc().format('DD/MM/YYYY HH:mm:ss')
@@ -212,5 +227,9 @@ export default {
     padding: 30px;
     margin-top: 30px;
     border: 1px solid lightgrey;
+  }
+  .underline:hover {
+    text-decoration: underline;
+    cursor: pointer;
   }
 </style>
