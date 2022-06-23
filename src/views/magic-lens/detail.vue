@@ -10,26 +10,104 @@
       </div>
     </div>
     <div style="margin: 0 auto; max-width: 1400px">
-      <div style="padding: 40px">
-        <h2 style="font-weight: bold; margin: 20px 0; font-size: 20px;">Detail Vesting</h2>
-        <div class="detail_container" style="flex-direction: column; display: flex;">
+      <div class="detail_container" style="padding: 40px">
+        <h2 style="font-weight: normal; margin: 20px 0; font-size: 15px;">Address: {{ $route.params.address }}</h2>
+        <div style="flex-direction: column; display: flex;">
+          <template>
+            <el-table
+              v-loading="loading"
+              :data="tableData"
+              size="small"
+              stripe
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="#"
+                width="80"
+                type="index"
+                :index="indexMethod"
+              />
+              <el-table-column
+                prop="vestingID"
+                label="Vestingschedule ID"
+                width="250"
+              />
+              <!-- <el-table-column
+                prop="schedule.beneficiary"
+                label="Address"
+                width="200"
+              /> -->
+              <el-table-column label="StartTime (UTC)">
+                <template slot-scope="scope">
+                  <div>
+                    {{ formatDate(scope.row.schedule.start.toNumber()) }}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="address"
+                label="EndTime (UTC)"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    {{ formatDate((scope.row.schedule.start.add(scope.row.schedule.duration)).toNumber()) }}
+                  </div>
+                </template>
 
-          <div>
-            <span style="font-weight: bold">Status: </span>
-            <el-tag v-if="tableData.schedule.locked === false" type="success">{{ tableData.schedule.locked ? 'Locked' : 'Active' }}</el-tag>
-            <el-tag v-else type="danger">{{ tableData.schedule.locked ? 'Locked' : 'Active' }}</el-tag>
+              </el-table-column>
+
+              <el-table-column
+                prop="address"
+                label="Total EZC"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    {{ formatEZC(scope.row.schedule.amountTotal.toBigInt() ) }}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="address"
+                label="Vested EZC"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    {{ formatEZC(scope.row.schedule.released.toBigInt()) }}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="address"
+                label="Status"
+                width="100"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    <el-tag v-if="scope.row.schedule.locked === false" type="success">{{ scope.row.schedule.locked ? 'Locked' : 'Active' }}</el-tag>
+                    <el-tag v-else type="danger">{{ scope.row.schedule.locked ? 'Locked' : 'Active' }}</el-tag>
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+          <div class="flex justify-center items-center mb-10" style="display: flex; justify-content: center; align-items: center; margin-bottom: 50px; margin-top: 20px">
+            <el-pagination
+              :page-size="pageSize"
+              :page-count="pageCount"
+              :background="true"
+              layout="prev, pager, next"
+              @current-change="changePage"
+            />
           </div>
-          <p style="margin: 10px 0;"><b>Vesting schedule ID</b>: <span>{{tableData.vestingID}}</span></p>
-          <p style="margin: 10px 0;"><b>Address</b>: <span>{{tableData.schedule.beneficiary}}</span></p>
-          <p style="margin: 10px 0;"><b>Start Time</b>: <span>{{ formatDate(tableData.schedule.start.toNumber()) }}</span></p>
-          <p style="margin: 10px 0;"><b>End Time</b>: <span>{{ formatDate((tableData.schedule.start.add(tableData.schedule.duration)).toNumber()) }}</span></p>
-          <p style="margin: 10px 0;"><b>Total EZC</b>: <span>{{ formatEZC(tableData.schedule.amountTotal.toBigInt() ) }} EZC</span></p>
-          <p style="margin: 10px 0;"><b>Vested EZC</b>: <span>{{ formatEZC(tableData.schedule.released.toBigInt()) }} EZC</span></p>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+
+
 <script>
 import moment from 'moment'
 const ethers = require('ethers')
@@ -55,6 +133,10 @@ export default {
     this.listSchedules(this.page, this.$route.params.address)
   },
   methods: {
+    indexMethod(index) {
+      return this.page * this.pageSize - this.pageSize + index + 1
+    },
+
     formatDate(value) {
       if (value) {
         return moment.unix(value).utc().format('DD/MM/YYYY HH:mm:ss')
@@ -84,11 +166,8 @@ export default {
       // Tổng số schedules
       let count
       if (address != null) {
-        console.log(1)
         count = await contract.getVestingSchedulesCountByBeneficiary(address)
       } else {
-        console.log(2)
-
         count = await contract.getVestingSchedulesCount()
       }
 
@@ -128,9 +207,10 @@ export default {
       }
 
       const schedules = await Promise.all(this.vestingSchedulePromises)
-      this.tableData = schedules[0]
-      console.log(schedules)
-
+      this.tableData = schedules
+      if (this.tableData) {
+        this.loading = false
+      }
       return schedules
     }
   }
