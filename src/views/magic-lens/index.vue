@@ -21,7 +21,6 @@
               stripe
               border
               style="width: 100%"
-              @row-click="showDetail"
               @cell-mouse-enter="underline_address"
               @cell-mouse-leave="remove_underline_address"
             >
@@ -40,7 +39,13 @@
                 prop="schedule.beneficiary"
                 label="Address"
                 width="200"
-              />
+              >
+                <template slot-scope="scope">
+                  <a style="text-decoration: underline;" :title="scope.row.schedule.beneficiary" @click="showDetail(scope.row)">
+                    {{ scope.row.schedule.beneficiary }}
+                  </a>
+                </template>
+              </el-table-column>
               <el-table-column label="StartTime (UTC)">
                 <template slot-scope="scope">
                   <div>
@@ -113,7 +118,10 @@ import moment from 'moment'
 const ethers = require('ethers')
 
 const RPC = process.env.RPC || 'https://api.ezchain.com/ext/bc/C/rpc'
-const provider = new ethers.providers.JsonRpcProvider({ url: RPC, timeout: 6000 })
+const provider = new ethers.providers.JsonRpcProvider({
+  url: RPC,
+  timeout: 6000
+})
 const pageSize = 50
 export default {
   data() {
@@ -135,7 +143,7 @@ export default {
     indexMethod(index) {
       return this.page * this.pageSize - this.pageSize + index + 1
     },
-    showDetail(row, column, event) {
+    showDetail(row) {
       console.log(row)
       this.$router.push({ path: `/${row.schedule.beneficiary}` })
     },
@@ -154,7 +162,10 @@ export default {
 
     formatDate(value) {
       if (value) {
-        return moment.unix(value).utc().format('DD/MM/YYYY HH:mm:ss')
+        return moment
+          .unix(value)
+          .utc()
+          .format('DD/MM/YYYY HH:mm:ss')
       }
       return ''
     },
@@ -172,7 +183,344 @@ export default {
     async listSchedules(pages) {
       const page = pages
       this.tableData = []
-      const abi = [{ 'type': 'constructor', 'stateMutability': 'nonpayable', 'inputs': [{ 'type': 'address', 'name': 'token_', 'internalType': 'address' }] }, { 'type': 'event', 'name': 'OwnershipTransferred', 'inputs': [{ 'type': 'address', 'name': 'previousOwner', 'internalType': 'address', 'indexed': true }, { 'type': 'address', 'name': 'newOwner', 'internalType': 'address', 'indexed': true }], 'anonymous': false }, { 'type': 'event', 'name': 'Released', 'inputs': [{ 'type': 'uint256', 'name': 'amount', 'internalType': 'uint256', 'indexed': false }], 'anonymous': false }, { 'type': 'event', 'name': 'Revoked', 'inputs': [], 'anonymous': false }, { 'type': 'fallback', 'stateMutability': 'payable' }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'bytes32', 'name': '', 'internalType': 'bytes32' }], 'name': 'computeNextVestingScheduleIdForHolder', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'computeReleasableAmount', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }] }, { 'type': 'function', 'stateMutability': 'pure', 'outputs': [{ 'type': 'bytes32', 'name': '', 'internalType': 'bytes32' }], 'name': 'computeVestingScheduleIdForAddressAndIndex', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'index', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'createVestingSchedule', 'inputs': [{ 'type': 'address', 'name': '_beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': '_start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': '_cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': '_duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': '_slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': '_revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': '_amount', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'tuple', 'name': '', 'internalType': 'struct TokenVesting.VestingSchedule', 'components': [{ 'type': 'bool', 'name': 'initialized', 'internalType': 'bool' }, { 'type': 'address', 'name': 'beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': 'amountTotal', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'released', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revoked', 'internalType': 'bool' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }], 'name': 'getLastVestingScheduleForHolder', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'address', 'name': '', 'internalType': 'address' }], 'name': 'getToken', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'bytes32', 'name': '', 'internalType': 'bytes32' }], 'name': 'getVestingIdAtIndex', 'inputs': [{ 'type': 'uint256', 'name': 'index', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'tuple', 'name': '', 'internalType': 'struct TokenVesting.VestingSchedule', 'components': [{ 'type': 'bool', 'name': 'initialized', 'internalType': 'bool' }, { 'type': 'address', 'name': 'beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': 'amountTotal', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'released', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revoked', 'internalType': 'bool' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }], 'name': 'getVestingSchedule', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'tuple', 'name': '', 'internalType': 'struct TokenVesting.VestingSchedule', 'components': [{ 'type': 'bool', 'name': 'initialized', 'internalType': 'bool' }, { 'type': 'address', 'name': 'beneficiary', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'cliff', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'start', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'duration', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'slicePeriodSeconds', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revocable', 'internalType': 'bool' }, { 'type': 'uint256', 'name': 'amountTotal', 'internalType': 'uint256' }, { 'type': 'uint256', 'name': 'released', 'internalType': 'uint256' }, { 'type': 'bool', 'name': 'revoked', 'internalType': 'bool' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }], 'name': 'getVestingScheduleByAddressAndIndex', 'inputs': [{ 'type': 'address', 'name': 'holder', 'internalType': 'address' }, { 'type': 'uint256', 'name': 'index', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getVestingSchedulesCount', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getVestingSchedulesCountByBeneficiary', 'inputs': [{ 'type': 'address', 'name': '_beneficiary', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getVestingSchedulesTotalAmount', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'uint256', 'name': '', 'internalType': 'uint256' }], 'name': 'getWithdrawableAmount', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [{ 'type': 'uint256', 'name': 'total', 'internalType': 'uint256' }], 'name': 'investorWithdraw', 'inputs': [{ 'type': 'bool', 'name': 'keepWrapped', 'internalType': 'bool' }] }, { 'type': 'function', 'stateMutability': 'view', 'outputs': [{ 'type': 'address', 'name': '', 'internalType': 'address' }], 'name': 'owner', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'release', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }, { 'type': 'uint256', 'name': 'amount', 'internalType': 'uint256' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'renounceOwnership', 'inputs': [] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'revoke', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'setLock', 'inputs': [{ 'type': 'bytes32', 'name': 'vestingScheduleId', 'internalType': 'bytes32' }, { 'type': 'bool', 'name': 'locked', 'internalType': 'bool' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'transferOwnership', 'inputs': [{ 'type': 'address', 'name': 'newOwner', 'internalType': 'address' }] }, { 'type': 'function', 'stateMutability': 'nonpayable', 'outputs': [], 'name': 'withdraw', 'inputs': [{ 'type': 'uint256', 'name': 'amount', 'internalType': 'uint256' }] }, { 'type': 'receive', 'stateMutability': 'payable' }]
+      const abi = [
+        {
+          type: 'constructor',
+          stateMutability: 'nonpayable',
+          inputs: [{ type: 'address', name: 'token_', internalType: 'address' }]
+        },
+        {
+          type: 'event',
+          name: 'OwnershipTransferred',
+          inputs: [
+            {
+              type: 'address',
+              name: 'previousOwner',
+              internalType: 'address',
+              indexed: true
+            },
+            {
+              type: 'address',
+              name: 'newOwner',
+              internalType: 'address',
+              indexed: true
+            }
+          ],
+          anonymous: false
+        },
+        {
+          type: 'event',
+          name: 'Released',
+          inputs: [
+            {
+              type: 'uint256',
+              name: 'amount',
+              internalType: 'uint256',
+              indexed: false
+            }
+          ],
+          anonymous: false
+        },
+        { type: 'event', name: 'Revoked', inputs: [], anonymous: false },
+        { type: 'fallback', stateMutability: 'payable' },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [{ type: 'bytes32', name: '', internalType: 'bytes32' }],
+          name: 'computeNextVestingScheduleIdForHolder',
+          inputs: [{ type: 'address', name: 'holder', internalType: 'address' }]
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
+          name: 'computeReleasableAmount',
+          inputs: [
+            {
+              type: 'bytes32',
+              name: 'vestingScheduleId',
+              internalType: 'bytes32'
+            }
+          ]
+        },
+        {
+          type: 'function',
+          stateMutability: 'pure',
+          outputs: [{ type: 'bytes32', name: '', internalType: 'bytes32' }],
+          name: 'computeVestingScheduleIdForAddressAndIndex',
+          inputs: [
+            { type: 'address', name: 'holder', internalType: 'address' },
+            { type: 'uint256', name: 'index', internalType: 'uint256' }
+          ]
+        },
+        {
+          type: 'function',
+          stateMutability: 'nonpayable',
+          outputs: [],
+          name: 'createVestingSchedule',
+          inputs: [
+            { type: 'address', name: '_beneficiary', internalType: 'address' },
+            { type: 'uint256', name: '_start', internalType: 'uint256' },
+            { type: 'uint256', name: '_cliff', internalType: 'uint256' },
+            { type: 'uint256', name: '_duration', internalType: 'uint256' },
+            {
+              type: 'uint256',
+              name: '_slicePeriodSeconds',
+              internalType: 'uint256'
+            },
+            { type: 'bool', name: '_revocable', internalType: 'bool' },
+            { type: 'uint256', name: '_amount', internalType: 'uint256' }
+          ]
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [
+            {
+              type: 'tuple',
+              name: '',
+              internalType: 'struct TokenVesting.VestingSchedule',
+              components: [
+                { type: 'bool', name: 'initialized', internalType: 'bool' },
+                {
+                  type: 'address',
+                  name: 'beneficiary',
+                  internalType: 'address'
+                },
+                { type: 'uint256', name: 'cliff', internalType: 'uint256' },
+                { type: 'uint256', name: 'start', internalType: 'uint256' },
+                { type: 'uint256', name: 'duration', internalType: 'uint256' },
+                {
+                  type: 'uint256',
+                  name: 'slicePeriodSeconds',
+                  internalType: 'uint256'
+                },
+                { type: 'bool', name: 'revocable', internalType: 'bool' },
+                {
+                  type: 'uint256',
+                  name: 'amountTotal',
+                  internalType: 'uint256'
+                },
+                { type: 'uint256', name: 'released', internalType: 'uint256' },
+                { type: 'bool', name: 'revoked', internalType: 'bool' },
+                { type: 'bool', name: 'locked', internalType: 'bool' }
+              ]
+            }
+          ],
+          name: 'getLastVestingScheduleForHolder',
+          inputs: [{ type: 'address', name: 'holder', internalType: 'address' }]
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [{ type: 'address', name: '', internalType: 'address' }],
+          name: 'getToken',
+          inputs: []
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [{ type: 'bytes32', name: '', internalType: 'bytes32' }],
+          name: 'getVestingIdAtIndex',
+          inputs: [{ type: 'uint256', name: 'index', internalType: 'uint256' }]
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [
+            {
+              type: 'tuple',
+              name: '',
+              internalType: 'struct TokenVesting.VestingSchedule',
+              components: [
+                { type: 'bool', name: 'initialized', internalType: 'bool' },
+                {
+                  type: 'address',
+                  name: 'beneficiary',
+                  internalType: 'address'
+                },
+                { type: 'uint256', name: 'cliff', internalType: 'uint256' },
+                { type: 'uint256', name: 'start', internalType: 'uint256' },
+                { type: 'uint256', name: 'duration', internalType: 'uint256' },
+                {
+                  type: 'uint256',
+                  name: 'slicePeriodSeconds',
+                  internalType: 'uint256'
+                },
+                { type: 'bool', name: 'revocable', internalType: 'bool' },
+                {
+                  type: 'uint256',
+                  name: 'amountTotal',
+                  internalType: 'uint256'
+                },
+                { type: 'uint256', name: 'released', internalType: 'uint256' },
+                { type: 'bool', name: 'revoked', internalType: 'bool' },
+                { type: 'bool', name: 'locked', internalType: 'bool' }
+              ]
+            }
+          ],
+          name: 'getVestingSchedule',
+          inputs: [
+            {
+              type: 'bytes32',
+              name: 'vestingScheduleId',
+              internalType: 'bytes32'
+            }
+          ]
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [
+            {
+              type: 'tuple',
+              name: '',
+              internalType: 'struct TokenVesting.VestingSchedule',
+              components: [
+                { type: 'bool', name: 'initialized', internalType: 'bool' },
+                {
+                  type: 'address',
+                  name: 'beneficiary',
+                  internalType: 'address'
+                },
+                { type: 'uint256', name: 'cliff', internalType: 'uint256' },
+                { type: 'uint256', name: 'start', internalType: 'uint256' },
+                { type: 'uint256', name: 'duration', internalType: 'uint256' },
+                {
+                  type: 'uint256',
+                  name: 'slicePeriodSeconds',
+                  internalType: 'uint256'
+                },
+                { type: 'bool', name: 'revocable', internalType: 'bool' },
+                {
+                  type: 'uint256',
+                  name: 'amountTotal',
+                  internalType: 'uint256'
+                },
+                { type: 'uint256', name: 'released', internalType: 'uint256' },
+                { type: 'bool', name: 'revoked', internalType: 'bool' },
+                { type: 'bool', name: 'locked', internalType: 'bool' }
+              ]
+            }
+          ],
+          name: 'getVestingScheduleByAddressAndIndex',
+          inputs: [
+            { type: 'address', name: 'holder', internalType: 'address' },
+            { type: 'uint256', name: 'index', internalType: 'uint256' }
+          ]
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
+          name: 'getVestingSchedulesCount',
+          inputs: []
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
+          name: 'getVestingSchedulesCountByBeneficiary',
+          inputs: [
+            { type: 'address', name: '_beneficiary', internalType: 'address' }
+          ]
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
+          name: 'getVestingSchedulesTotalAmount',
+          inputs: []
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
+          name: 'getWithdrawableAmount',
+          inputs: []
+        },
+        {
+          type: 'function',
+          stateMutability: 'nonpayable',
+          outputs: [
+            { type: 'uint256', name: 'total', internalType: 'uint256' }
+          ],
+          name: 'investorWithdraw',
+          inputs: [{ type: 'bool', name: 'keepWrapped', internalType: 'bool' }]
+        },
+        {
+          type: 'function',
+          stateMutability: 'view',
+          outputs: [{ type: 'address', name: '', internalType: 'address' }],
+          name: 'owner',
+          inputs: []
+        },
+        {
+          type: 'function',
+          stateMutability: 'nonpayable',
+          outputs: [],
+          name: 'release',
+          inputs: [
+            {
+              type: 'bytes32',
+              name: 'vestingScheduleId',
+              internalType: 'bytes32'
+            },
+            { type: 'uint256', name: 'amount', internalType: 'uint256' }
+          ]
+        },
+        {
+          type: 'function',
+          stateMutability: 'nonpayable',
+          outputs: [],
+          name: 'renounceOwnership',
+          inputs: []
+        },
+        {
+          type: 'function',
+          stateMutability: 'nonpayable',
+          outputs: [],
+          name: 'revoke',
+          inputs: [
+            {
+              type: 'bytes32',
+              name: 'vestingScheduleId',
+              internalType: 'bytes32'
+            }
+          ]
+        },
+        {
+          type: 'function',
+          stateMutability: 'nonpayable',
+          outputs: [],
+          name: 'setLock',
+          inputs: [
+            {
+              type: 'bytes32',
+              name: 'vestingScheduleId',
+              internalType: 'bytes32'
+            },
+            { type: 'bool', name: 'locked', internalType: 'bool' }
+          ]
+        },
+        {
+          type: 'function',
+          stateMutability: 'nonpayable',
+          outputs: [],
+          name: 'transferOwnership',
+          inputs: [
+            { type: 'address', name: 'newOwner', internalType: 'address' }
+          ]
+        },
+        {
+          type: 'function',
+          stateMutability: 'nonpayable',
+          outputs: [],
+          name: 'withdraw',
+          inputs: [{ type: 'uint256', name: 'amount', internalType: 'uint256' }]
+        },
+        { type: 'receive', stateMutability: 'payable' }
+      ]
       const contractAddress = '0x05E4dfbB6f26E568D846C95C0C716C4338fd1C0A'
 
       const contract = new ethers.Contract(contractAddress, abi, provider)
@@ -194,7 +542,9 @@ export default {
 
       for (let i = offset; i < offset + limit; i++) {
         const id = new Promise(resolve => {
-          contract.getVestingIdAtIndex(i).then(result => { resolve({ index: i, vestingID: result }) })
+          contract.getVestingIdAtIndex(i).then(result => {
+            resolve({ index: i, vestingID: result })
+          })
         })
 
         this.vestingIDPromises.push(id)
@@ -204,7 +554,9 @@ export default {
 
       for (const id of vestingIDs) {
         const schedule = new Promise(resolve => {
-          contract.getVestingSchedule(id.vestingID).then(result => { resolve({ vestingID: id.vestingID, schedule: result }) })
+          contract.getVestingSchedule(id.vestingID).then(result => {
+            resolve({ vestingID: id.vestingID, schedule: result })
+          })
         })
         this.vestingSchedulePromises.push(schedule)
       }
@@ -220,16 +572,16 @@ export default {
 }
 </script>
 <style>
-  .headers {
-    box-shadow: 0px 0px 0px 1px lightgray;
-  }
-  .detail_container {
-    padding: 30px;
-    margin-top: 30px;
-    border: 1px solid lightgrey;
-  }
-  .underline:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
+.headers {
+  box-shadow: 0px 0px 0px 1px lightgray;
+}
+.detail_container {
+  padding: 30px;
+  margin-top: 30px;
+  border: 1px solid lightgrey;
+}
+.underline:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 </style>
